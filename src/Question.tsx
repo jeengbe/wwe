@@ -77,6 +77,11 @@ class Question extends React.Component<QuestionProps, QuestionState> {
     if (this.filterRef.current !== null) {
       this.filterRef.current.value = "";
     }
+
+    API.POST("api/option/" + this.props.question.ident + "/" + this.props.question.options[index].ident, {
+      status: !this.state.selectedIndices.includes(index) ? "1" : "0",
+    });
+
     this.setState(oldState => ({
       filterText: oldState.selectedIndices.includes(index) ? oldState.filterText : "",
       selectedIndices: oldState.selectedIndices.includes(index) ? oldState.selectedIndices.filter(i => i !== index) : [...oldState.selectedIndices, index],
@@ -135,14 +140,8 @@ class Question extends React.Component<QuestionProps, QuestionState> {
     }
   }
 
-  protected async submit() {
-    API.POST("api/question/" + this.props.question.ident + "/options", {
-      idents: JSON.stringify(this.state.selectedIndices.map(index => this.props.question.options[index].ident)),
-    });
-  }
-
   protected nextQuestion() {
-    this.submit();
+    API.POST("api/next/" + this.props.question.ident);
     if (this.props.onNextQuestion !== undefined) {
       this.props.onNextQuestion();
     }

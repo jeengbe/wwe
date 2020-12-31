@@ -10,6 +10,7 @@ export default class API {
             let r: R | {
               error: string;
             };
+
             try {
               r = JSON.parse(ajax.responseText);
             } catch (e) {

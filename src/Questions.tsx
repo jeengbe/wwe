@@ -37,10 +37,10 @@ class Questions extends React.Component<QuestionsProps, QuestionsState> {
 
   protected async loadQuestions() {
     // Do api call
-    const questions = API.POST<IQuestion[]>("api/questions/" + this.props.ident);
+    const questions = API.POST<IQuestion[]>("api/list/" + this.props.ident);
     questions.catch(e =>
       this.setState({
-        error: e === "wrongIdent" ? "Unknown set" : e,
+        error: e,
       })
     );
 
