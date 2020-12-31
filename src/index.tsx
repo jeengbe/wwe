@@ -7,6 +7,7 @@ import "./index.scss";
 import Stats from "./stats/Stats";
 
 export const API_BASE = "http://localhost:83/";
+// export const API_BASE = "https://h2880126.stratoserver.net/";
 
 interface AppState {}
 
@@ -29,16 +30,16 @@ class App extends React.Component<{}, AppState> {
 
   render(): JSX.Element {
     const path = location.pathname.substr(1).split("/");
-    let handle: Path["handle"] | null = null as Path["handle"] | null;
+    let handle: null | Path["handle"] = null as Path["handle"] | null;
 
     this.paths.forEach((p: Path) => {
       const ps = p.path.split("/");
       for (let i = 0; i < ps.length; i++) {
-        if (path[i] !== undefined && (ps[i] === "_" || path[i] === ps[i])) {
-          handle = p.handle;
+        if (path[i] === undefined || (ps[i] !== "_" && path[i] !== ps[i])) {
           return;
         }
       }
+      handle = p.handle;
     });
 
     if (handle !== null) {
