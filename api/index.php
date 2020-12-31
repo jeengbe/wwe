@@ -15,24 +15,21 @@ $sql->fetch();
 $sql->close();
 
 $inc = null;
-if (count($URL) > 0) {
-  switch ($URL[0]) {
-    case "list":
-      if (count($URL) === 2) {
-        $inc = "list.php";
-      }
-      break;
-    case "option":
-      if (count($URL) === 3) {
-        $inc = "option.php";
-      }
-      break;
-    case "next":
-      if(count($URL) === 2) {
-        $inc = "next.php";
-      }
-      break;
+
+$incs = [
+  "questions/list/_" => "questions/list.php",
+  "questions/option/_/_" => "questions/option.php",
+  "questions/next/_" => "questions/next.php"
+];
+
+foreach($incs as $incp => $incf) {
+  $incpa = explode("/", $incp);
+  foreach($incpa as $i => $incpas) {
+    if(!isset($URL[$i]) || ($incpas !== "_" && $URL[$i] !== $incpas)) {
+      continue 2;
+    }
   }
+  $inc = $incf;
 }
 
 if ($inc !== null) {

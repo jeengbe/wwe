@@ -1,6 +1,6 @@
 import React from "react";
 import ScrollToTop from "react-scroll-to-top";
-import API from "./API";
+import API from "src/API";
 import Question, { IQuestion } from "./Question";
 import "./questions.scss";
 
@@ -37,7 +37,7 @@ class Questions extends React.Component<QuestionsProps, QuestionsState> {
 
   protected async loadQuestions() {
     // Do api call
-    const questions = API.POST<IQuestion[]>("api/list/" + this.props.ident);
+    const questions = API.POST<IQuestion[]>("api/questions/list/" + this.props.ident);
     questions.catch(e =>
       this.setState({
         error: e,

@@ -2,7 +2,7 @@ import classNames from "classnames";
 import Fuse from "fuse.js";
 import isMobile from "is-mobile";
 import React from "react";
-import API from "./API";
+import API from "src/API";
 
 export interface Option {
   ident: string;
@@ -78,7 +78,7 @@ class Question extends React.Component<QuestionProps, QuestionState> {
       this.filterRef.current.value = "";
     }
 
-    API.POST("api/option/" + this.props.question.ident + "/" + this.props.question.options[index].ident, {
+    API.POST("api/questions/option/" + this.props.question.ident + "/" + this.props.question.options[index].ident, {
       status: !this.state.selectedIndices.includes(index) ? "1" : "0",
     });
 
@@ -141,7 +141,7 @@ class Question extends React.Component<QuestionProps, QuestionState> {
   }
 
   protected nextQuestion() {
-    API.POST("api/next/" + this.props.question.ident);
+    API.POST("api/questions/next/" + this.props.question.ident);
     if (this.props.onNextQuestion !== undefined) {
       this.props.onNextQuestion();
     }
