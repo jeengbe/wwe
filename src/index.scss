@@ -1,0 +1,28 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Nunito", sans-serif;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.has-search .form-control {
+  padding-right: 2.375rem;
+}
+
+.has-search .search {
+    width: 2.5rem;
+    height: 2.5rem;
+    line-height: 2.5rem;
+    text-align: center;
+    color: #aaa;
+    right: 0;
+}

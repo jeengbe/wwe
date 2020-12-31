@@ -1,0 +1,10 @@
+RewriteEngine on
+
+RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_URI} !-f
+RewriteRule ^api/?(.*)$ api/index.php?api=$1 [L]
+
+RewriteCond %{DOCUMENT_ROOT}/build/%{REQUEST_URI} -f
+RewriteRule ^(.*)$ /build/$1 [L]
+
+RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_URI} !-f
+RewriteRule ^(.*)$ /build/index.html [L]

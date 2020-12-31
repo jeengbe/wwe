@@ -1,0 +1,52 @@
+@keyframes stageFirst {
+  0% {
+    transform: translateY(13px);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes stageIn {
+  0% {
+    transform: translateX(130%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes stageOut {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-130%);
+    opacity: 0;
+  }
+}
+
+
+.stage {
+  user-select: none;
+  &.first {
+    animation: stageFirst .3s ease-out;
+  }
+  &.switching {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    &.out {
+      animation: stageOut 1000ms ease-in-out;
+    }
+    &.in {
+      animation: stageIn 1000ms ease-in-out;
+    }
+  }
+}
