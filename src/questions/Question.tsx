@@ -152,7 +152,7 @@ class Question extends React.Component<QuestionProps, QuestionState> {
       return (
         <div className="p-3 p-md-5 container">
           <div className="col-md-8 mx-auto p-0">
-            <div className="jumbotron shadow">
+            <div className="jumbotron bg-light-gray shadow">
               <h1 className="display-4 text-center">Nope</h1>
             </div>
           </div>
@@ -220,7 +220,7 @@ class Question extends React.Component<QuestionProps, QuestionState> {
         <button disabled={!valid} ref={this.btnNextRef} className={"shadow w-100 btn btn-" + (valid ? "success" : "secondary")} onClick={valid ? () => this.nextQuestion() : undefined} style={{ borderBottomLeftRadius: 0, borderBottomRightRadius: 0, transition: "all .3s" }}>
           Next
         </button>
-        <div className="jumbotron pt-5 pb-1 mb-0 rounded-0">
+        <div className="jumbotron bg-light-gray pt-5 pb-1 mb-0 rounded-0">
           <h2>{question.title}</h2>
           {question.description !== undefined && <p className="text-muted">{question.description}</p>}
           <p className="text-muted font-weight-light pt-4" style={{ fontSize: "0.85rem" }}>

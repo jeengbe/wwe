@@ -16,10 +16,8 @@ $sql->close();
 $sql = $DB->prepare("SELECT s.id FROM sets as s WHERE s.ident = ?");
 $sql->bind_param("s", $URL[2]);
 $sql->execute();
-if(!$sql->fetch()) {
-  return [
-    "error" => "Invalid set"
-  ];
+if (!$sql->fetch()) {
+  return ["error" => "Invalid set"];
 }
 $sql->close();
 
@@ -28,7 +26,7 @@ $sql->bind_result($id, $ident, $title, $description, $min, $max, $exactly);
 $sql->bind_param("ss", $URL[2], $sid);
 $sql->execute();
 $sql->store_result();
-while($sql->fetch()) {
+while ($sql->fetch()) {
   $sqlOpt = $DB->prepare("SELECT o.ident, o.name FROM options as o WHERE o.question = ?");
   $sqlOpt->bind_result($oIdent, $oName);
   $sqlOpt->bind_param("i", $id);
@@ -36,34 +34,27 @@ while($sql->fetch()) {
   $q = [
     "ident" => $ident,
     "title" => $title,
-    "description" => $description,
     "options" => []
   ];
-  if($min !== null || $max !== null) {
-    if($min !== null)
+  if ($description !== null) {
+    $q["description"] = $description;
+  }
+
+  if ($min !== null || $max !== null) {
+    if ($min !== null)
       $q["min"] = $min;
-    if($max !== null)
+    if ($max !== null)
       $q["max"] = $max;
-  } else if($exactly !== null)
+  } else if ($exactly !== null)
     $q["exactly"] = $exactly;
 
-  while($sqlOpt->fetch()) {
+  while ($sqlOpt->fetch()) {
     $q["options"][] = [
       "ident" => $oIdent,
       "name" => $oName
     ];
   }
   $data[] = $q;
-}
-
-function getClientIP(): string {
-  $keys = array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR');
-  foreach ($keys as $k) {
-    if (!empty($_SERVER[$k]) && filter_var($_SERVER[$k], FILTER_VALIDATE_IP)) {
-      return $_SERVER[$k];
-    }
-  }
-  return "UNKNOWN";
 }
 
 return $data;

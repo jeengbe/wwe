@@ -19,7 +19,9 @@ $inc = null;
 $incs = [
   "questions/list/_" => "questions/list.php",
   "questions/option/_/_" => "questions/option.php",
-  "questions/next/_" => "questions/next.php"
+  "questions/next/_" => "questions/next.php",
+  "stats/_" => "stats.php",
+  "insert" => "insert.php"
 ];
 
 foreach($incs as $incp => $incf) {
@@ -44,4 +46,15 @@ if ($inc !== null) {
   })($inc);
 } else {
   echo json_encode(["error" => "Unknown route"]);
+}
+
+
+function getClientIP(): string {
+  $keys = array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR');
+  foreach ($keys as $k) {
+    if (!empty($_SERVER[$k]) && filter_var($_SERVER[$k], FILTER_VALIDATE_IP)) {
+      return $_SERVER[$k];
+    }
+  }
+  return "UNKNOWN";
 }

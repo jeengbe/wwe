@@ -14,6 +14,7 @@ export default class API {
             try {
               r = JSON.parse(ajax.responseText);
             } catch (e) {
+              console.error(e.toString() + ": " + ajax.responseText.replaceAll(/<br \/>/g, "\n").replaceAll(/<\/?b>/g, ""));
               error(e.toString());
               return;
             }
@@ -30,7 +31,7 @@ export default class API {
 
             success(r as R);
           } else {
-            error("Status: " + ajax.status);
+            error("Status: " + ajax.status + " " + ajax.statusText);
           }
         }
       };

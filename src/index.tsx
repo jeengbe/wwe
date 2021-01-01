@@ -5,9 +5,9 @@ import "bootstrap/dist/css/bootstrap.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./index.scss";
 import Stats from "./stats/Stats";
+import Insert from "./Insert";
 
 export const API_BASE = "http://localhost:83/";
-// export const API_BASE = "https://h2880126.stratoserver.net/";
 
 interface AppState {}
 
@@ -19,12 +19,16 @@ interface Path {
 class App extends React.Component<{}, AppState> {
   private readonly paths: Path[] = [
     {
-      path: "_",
-      handle: path => <Questions ident={path[0]} />,
-    },
-    {
       path: "stats/_",
       handle: path => <Stats ident={path[1]} />,
+    },
+    {
+      path: "insert",
+      handle: () => <Insert />,
+    },
+    {
+      path: "_",
+      handle: path => <Questions ident={path[0]} />,
     },
   ];
 
@@ -32,15 +36,20 @@ class App extends React.Component<{}, AppState> {
     const path = location.pathname.substr(1).split("/");
     let handle: null | Path["handle"] = null as Path["handle"] | null;
 
-    this.paths.forEach((p: Path) => {
-      const ps = p.path.split("/");
-      for (let i = 0; i < ps.length; i++) {
-        if (path[i] === undefined || (ps[i] !== "_" && path[i] !== ps[i])) {
-          return;
+    try {
+      this.paths.forEach((p: Path) => {
+        const ps = p.path.split("/");
+        for (let i = 0; i < ps.length; i++) {
+          if (path[i] === undefined || (ps[i] !== "_" && path[i] !== ps[i])) {
+            return;
+          }
         }
-      }
-      handle = p.handle;
-    });
+        handle = p.handle;
+        throw new Error("Site found!");
+      });
+    } catch (expected) {
+      console.log((expected as Error).message);
+    }
 
     if (handle !== null) {
       return handle(path);
@@ -61,3 +70,8 @@ window.addEventListener("popstate", e => {
   appMount();
   e.preventDefault();
 });
+
+(window as {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Chart: any
+} & typeof window & typeof globalThis).Chart.defaults.global.defaultFontFamily = "'Nunito', sans-serif";

@@ -4,7 +4,7 @@
   "description": "Wer würde eher",
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build --verbose"
+    "build": "rm -rf build && react-scripts build --verbose"
   },
   "author": "Jeengbe",
   "license": "ISC",
