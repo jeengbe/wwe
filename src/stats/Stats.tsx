@@ -1,6 +1,7 @@
 import React from "react";
 import { Doughnut } from "react-chartjs-2";
 import API from "src/API";
+import ScrollToTop from "src/scrollToTop/ScrollToTop";
 
 interface StatsProps {
   ident: string;
@@ -145,8 +146,8 @@ class Stats extends React.Component<StatsProps, StatsState> {
       }
 
       const questions = this.state.stats.questions.map((question, index) => (
-        <div key={question.title} className={"w-100 jumbotron shadow bg-white " + (index + 1 === this.state.stats?.questions.length ? "mb-0" : "")}>
-          <h3>{question.title}</h3>
+        <div key={question.title} className={"w-100 jumbotron py-4 shadow bg-white " + (index + 1 === this.state.stats?.questions.length ? "mb-0" : "")}>
+          <h3 className="mb-3">{question.title}</h3>
           {question.options.length === 0 ? (
             <p className="text-muted text-center mt-5">No Data</p>
           ) : (
@@ -169,12 +170,15 @@ class Stats extends React.Component<StatsProps, StatsState> {
       ));
 
       return (
-        <div className="p-3 p-md-5 container">
-          <div className="col-md-8 mx-auto p-0">
-            <h1 className="w-100 display-4 mb-5 text-center">Statistics for {this.state.stats.set.name}</h1>
-            {questions}
+        <>
+          <ScrollToTop />
+          <div className="p-3 p-md-5 container">
+            <div className="col-md-8 mx-auto p-0">
+              <h1 className="w-100 display-4 mb-5 text-center">Statistics for {this.state.stats.set.name}</h1>
+              {questions}
+            </div>
           </div>
-        </div>
+        </>
       );
     }
   }

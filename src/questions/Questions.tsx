@@ -1,6 +1,6 @@
 import React from "react";
-import ScrollToTop from "react-scroll-to-top";
 import API from "src/API";
+import ScrollToTop from "src/scrollToTop/ScrollToTop";
 import Question, { IQuestion } from "./Question";
 import "./questions.scss";
 
@@ -133,7 +133,7 @@ class Questions extends React.Component<QuestionsProps, QuestionsState> {
 
     return (
       <>
-        <ScrollToTop smooth style={{ borderRadius: "100%" }} />
+        <ScrollToTop />
         <div className="p-3 p-md-5 container">
           <div className="col-md-8 mx-auto p-0">
             <Question

@@ -1,0 +1,32 @@
+$dims: 50px;
+$padd: 10px;
+.scrollToTop {
+  position: fixed;
+  bottom: $padd;
+  right: -$dims;
+  width: $dims;
+  height: $dims;
+  z-index: 10;
+  background-color: white;
+  border-radius: $dims;
+  border: 0;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  transition: right .3s ease-out, opacity .3s ease-out, background-color .3s ease-in-out;
+  opacity: 0;
+  will-change: right, opacity, background-color;
+  text-align: center;
+  &:focus {
+    outline: none;
+  }
+  &:hover {
+    background-color: brighten(whitesmoke, 2%);
+  }
+  &.show {
+    opacity: 1;
+    right: $padd;
+  }
+  >i {
+    line-height: $dims;
+    font-size: $dims / 2;
+  }
+}
