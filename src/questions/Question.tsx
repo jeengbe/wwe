@@ -182,7 +182,7 @@ class Question extends React.Component<QuestionProps, QuestionState> {
         if (q.max !== undefined) {
           selections = "Select at most " + q.max + " option" + (q.max === 1 ? "" : "s") + ".";
         } else {
-          selections = "This should not be here";
+          selections = "<p class='text-error'>This condition should not be possible</p>";
         }
       }
     }
@@ -238,7 +238,7 @@ class Question extends React.Component<QuestionProps, QuestionState> {
             <label key={option.name} className="list-group-item mb-0 pt-3" style={{ cursor: "pointer" }}>
               <div className="form-check">
                 <input type="checkbox" className="form-check-input" disabled={this.props.switching !== undefined || (!this.state.selectedIndices.includes(option.index) && enough)} checked={this.state.selectedIndices.includes(option.index)} onChange={() => this.toggleOption(option.index)} />
-                <span className="form-check-label">{option.name}</span>
+                <span className="notranslate form-check-label">{option.name}</span>
               </div>
             </label>
           ))}

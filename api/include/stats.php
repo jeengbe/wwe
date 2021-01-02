@@ -39,6 +39,8 @@ $sql->execute();
 
 // Prepare stats
 
+define("MIN_ANS", 10);
+$data["minAns"] = MIN_ANS;
 // Set
 $data["set"] = [
   "name" => $sName
@@ -68,30 +70,34 @@ while ($sqlQue->fetch()) {
     "answers" => $qAns,
     "options" => []
   ];
-  if($qDescription !== null) {
+  if ($qDescription !== null) {
     $q["description"] = $qDescription;
   }
 
   if ($qMin !== null || $qMax !== null) {
     if ($qMin !== null)
-    $q["min"] = $qMin;
+      $q["min"] = $qMin;
     if ($qMax !== null)
-    $q["max"] = $qMax;
+      $q["max"] = $qMax;
   } else if ($qExactly !== null)
     $q["exactly"] = $qExactly;
 
-  $sqlOpt->execute();
-  $sqlOpt->store_result();
-  while($sqlOpt->fetch()) {
-    $sqlAns->execute();
-    $sqlAns->store_result();
-    $sqlAns->fetch();
-    $q["options"][] = [
-      "option" => [
-        "name" => $oName
-      ],
-      "count" => $aNr
-    ];
+  if ($qAns >= MIN_ANS) {
+    $sqlOpt->execute();
+    $sqlOpt->store_result();
+    while ($sqlOpt->fetch()) {
+      $sqlAns->execute();
+      $sqlAns->store_result();
+      $sqlAns->fetch();
+      $q["options"][] = [
+        "option" => [
+          "name" => $oName
+        ],
+        "count" => $aNr
+      ];
+    }
+  } else {
+    $q["options"] = "not enough data";
   }
   $data["questions"][] = $q;
 }

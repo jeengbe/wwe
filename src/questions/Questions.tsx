@@ -152,7 +152,7 @@ class Questions extends React.Component<QuestionsProps, QuestionsState> {
             {this.state.switching && this.state.questions.length > this.state.currentQuestion + 1 && <Question switching="in" question={this.state.questions[this.state.currentQuestion + 1]} />}
             {this.state.switching && this.state.questions.length === this.state.currentQuestion + 1 && (
               <div className="stage shadow switching in">
-                <div className="jumbotron pt-5 pb-1 mb-0">
+                <div className="jumbotron bg-white pt-5 pb-1 mb-0">
                   <h1 className="display-4">Done!</h1>
                   <p className="text-muted">
                     Thank you for answering the questions :)

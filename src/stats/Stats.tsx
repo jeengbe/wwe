@@ -17,6 +17,7 @@ interface IQuestionExactly {
 }
 
 interface ISetStats {
+  minAns: number;
   set: {
     name: string;
   };
@@ -24,12 +25,14 @@ interface ISetStats {
     title: string;
     answers: number;
     description?: string;
-    options: {
-      option: {
-        name: string;
-      };
-      count: number;
-    }[];
+    options:
+      | {
+          option: {
+            name: string;
+          };
+          count: number;
+        }[]
+      | "not enough data";
   } & XOR<IQuestionRange, IQuestionExactly>)[];
 }
 
@@ -145,29 +148,62 @@ class Stats extends React.Component<StatsProps, StatsState> {
         );
       }
 
-      const questions = this.state.stats.questions.map((question, index) => (
-        <div key={question.title} className={"w-100 jumbotron py-4 shadow bg-white " + (index + 1 === this.state.stats?.questions.length ? "mb-0" : "")}>
-          <h3 className="mb-3">{question.title}</h3>
-          {question.options.length === 0 ? (
-            <p className="text-muted text-center mt-5">No Data</p>
-          ) : (
-            <>
-              <Doughnut
-                data={{
-                  datasets: [
-                    {
-                      data: question.options.filter(op => op.count > 0).map(op => op.count),
-                      backgroundColor: this.colors(question.options.filter(op => op.count > 0).length),
-                    },
-                  ],
-                  labels: question.options.filter(op => op.count > 0).map(op => op.option.name),
-                }}
-              />
-              <p className="figure-caption mt-3 text-right">{question.answers} answers</p>
-            </>
-          )}
-        </div>
-      ));
+      const questions = this.state.stats.questions.map((question, index) => {
+        // Formulate selections
+        let selections;
+        if ((question as IQuestionExactly).exactly !== undefined) {
+          const q = question as IQuestionExactly;
+          q.exactly = q.exactly === undefined ? 1 : q.exactly;
+          selections = "Exactly " + q.exactly + " option" + (q.exactly === 1 ? "" : "s") + " selected.";
+        } else {
+          const q = question as IQuestionRange;
+
+          q.min = q.min === undefined ? 1 : q.min;
+          if (q.min !== 0) {
+            if (q.max === undefined) {
+              selections = "At least " + q.min + " option" + (q.min === 1 ? "" : "s") + " selected.";
+            } else {
+              selections = "Between " + q.min + " and " + q.max + " options selected.";
+            }
+          } else {
+            if (q.max === undefined) {
+              selections = "At most " + q.max + " option" + (q.max === 1 ? "" : "s") + " selected.";
+            } else {
+              selections = "<p class='text-error'>This condition should not be possible</p>";
+            }
+          }
+        }
+
+        return (
+          <div key={question.title} className={"w-100 jumbotron py-4 shadow bg-white " + (index + 1 === this.state.stats?.questions.length ? "mb-0" : "")}>
+            <h3 className="mb-3">{question.title}</h3>
+            {question.description !== undefined && <p className="text-muted">{question.description}</p>}
+            <p className="text-muted font-weight-light">{selections}</p>
+            {question.options === "not enough data" ? (
+              <p className="text-muted text-center mt-5">
+                <abbr title={"At least " + this.state.stats?.minAns + " answer" + (this.state.stats?.minAns !== 1 ? "s are" : " is") + " required to retain anonymity."}>Not enough data</abbr>
+              </p>
+            ) : (
+              <>
+                <Doughnut
+                  data={{
+                    datasets: [
+                      {
+                        data: question.options.filter(op => op.count > 0).map(op => op.count),
+                        backgroundColor: this.colors(question.options.filter(op => op.count > 0).length),
+                      },
+                    ],
+                    labels: question.options.filter(op => op.count > 0).map(op => op.option.name),
+                  }}
+                />
+              </>
+            )}
+            <p className="figure-caption mt-3 text-right">
+              {question.answers} answer{question.answers !== 1 ? "s" : ""}
+            </p>
+          </div>
+        );
+      });
 
       return (
         <>
