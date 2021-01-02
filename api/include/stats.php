@@ -1,6 +1,7 @@
 <?php
 // stats/_
 /** @var \mysqli $DB */
+define("MIN_ANS", 10);
 
 if (!isset($SESSID)) {
   // Register session
@@ -39,7 +40,6 @@ $sql->execute();
 
 // Prepare stats
 
-define("MIN_ANS", 10);
 $data["minAns"] = MIN_ANS;
 // Set
 $data["set"] = [
@@ -49,9 +49,9 @@ $data["set"] = [
 // Questions
 $data["questions"] = [];
 // Get all questions
-$sqlQue = $DB->prepare("SELECT (SELECT COUNT(DISTINCT a.session) FROM `answers` as a JOIN options as o ON a.option = o.ID WHERE o.question = q.ID), q.ID, q.title, q.description, q.min, q.max, q.exactly FROM questions AS q WHERE q.set = ?");
+$sqlQue = $DB->prepare("SELECT (SELECT COUNT(DISTINCT a.session) FROM `answers` as a JOIN options as o ON a.option = o.ID WHERE o.question = q.ID), (SELECT COUNT(y.ID)-COUNT(n.ID) FROM answers AS y LEFT JOIN answers AS n ON y.option = n.option AND n.status = 0 LEFT JOIN options AS o ON y.option = o.ID WHERE y.status = 1 AND o.question = q.ID), q.ID, q.title, q.description, q.min, q.max, q.exactly FROM questions AS q WHERE q.set = ?");
 $sqlQue->bind_param("i", $sID);
-$sqlQue->bind_result($qAns, $qID, $qTitle, $qDescription, $qMin, $qMax, $qExactly);
+$sqlQue->bind_result($qAns, $qOptNr, $qID, $qTitle, $qDescription, $qMin, $qMax, $qExactly);
 // Get all options per question
 $sqlOpt = $DB->prepare("SELECT o.ID, o.name FROM options as o WHERE o.question = ?");
 $sqlOpt->bind_param("i", $qID);
@@ -68,6 +68,7 @@ while ($sqlQue->fetch()) {
   $q = [
     "title" => $qTitle,
     "answers" => $qAns,
+    "optNr" => $qOptNr,
     "options" => []
   ];
   if ($qDescription !== null) {

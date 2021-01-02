@@ -24,6 +24,7 @@ interface ISetStats {
   questions: ({
     title: string;
     answers: number;
+    optNr: number;
     description?: string;
     options:
       | {
@@ -61,13 +62,13 @@ class Stats extends React.Component<StatsProps, StatsState> {
    * Genrate a random color
    */
   public color(): string {
-    const minS = 30;
-    const maxS = 50;
+    const minS = 40;
+    const maxS = 60;
     const minL = 60;
-    const maxL = 80;
-    this.h += Math.floor(Math.random() * 35) + 15;
-    if (this.h > 255) {
-      this.h %= 255;
+    const maxL = 90;
+    this.h += Math.floor(Math.random() * 15) + 15;
+    if (this.h > 360) {
+      this.h %= 360;
     }
 
     return "hsl(" + this.h + "," + (Math.floor(Math.random() * (maxS - minS)) + minS) + "%," + (Math.floor(Math.random() * (maxL - minL)) + minL) + "%)";
@@ -78,7 +79,7 @@ class Stats extends React.Component<StatsProps, StatsState> {
    */
   public colors(length: number): string[] {
     const r: string[] = [];
-    this.h = Math.floor(Math.random() * 255);
+    this.h = Math.floor(Math.random() * 360);
     for (let i = 0; i < length; i++) {
       let c;
       do {
@@ -200,6 +201,12 @@ class Stats extends React.Component<StatsProps, StatsState> {
             )}
             <p className="figure-caption mt-3 text-right">
               {question.answers} answer{question.answers !== 1 ? "s" : ""}
+              {question.optNr !== question.answers && (
+                <>
+                  <br />
+                  {question.optNr} selected option{question.answers !== 1 ? "s" : ""}
+                </>
+              )}
             </p>
           </div>
         );
