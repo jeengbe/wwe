@@ -57,8 +57,8 @@ $sqlOpt = $DB->prepare("SELECT o.ID, o.name FROM options as o WHERE o.question =
 $sqlOpt->bind_param("i", $qID);
 $sqlOpt->bind_result($oID, $oName);
 // Count answers per option per question
-$sqlAns = $DB->prepare("SELECT COUNT(y.ID)-COUNT(n.ID) FROM answers AS y LEFT JOIN answers AS n ON y.option = n.option AND n.status = 0 WHERE y.status = 1 AND y.option = ?");
-$sqlAns->bind_param("i", $oID);
+  $sqlAns = $DB->prepare("SELECT (SELECT COUNT(y.ID) FROM answers as y WHERE y.status = 1 AND y.option = ?) - (SELECT COUNT(n.ID) FROM answers as n WHERE n.status = 0 AND n.option = ?)");
+$sqlAns->bind_param("ii", $oID, $oID);
 $sqlAns->bind_result($aNr);
 
 

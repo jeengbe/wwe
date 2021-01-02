@@ -79,7 +79,7 @@ class Questions extends React.Component<QuestionsProps, QuestionsState> {
       return (
         <div className="p-3 p-md-5 container">
           <div className="col-md-8 mx-auto p-0">
-            <div className="jumbotron bg-white shadow">
+            <div className="jumbotron bg-light-gray shadow">
               <h1 className="display-4">Whoops!</h1>
               <p className="text-muted">
                 An error occured whilst loading the page: <span className="text-danger">{this.state.error.toString()}</span>
@@ -105,7 +105,7 @@ class Questions extends React.Component<QuestionsProps, QuestionsState> {
       return (
         <div className="p-3 p-md-5 container">
           <div className="col-md-8 mx-auto p-0">
-            <div className="jumbotron bg-white shadow">
+            <div className="jumbotron bg-light-gray shadow">
               <div className="spinner-border d-none d-sm-block float-right mt-5" />
               <h1 className="display-4">Booting up</h1>
               <p className="text-muted">Loading Questions..{new Array(this.state.loadingDots).fill(".")}</p>
@@ -118,7 +118,7 @@ class Questions extends React.Component<QuestionsProps, QuestionsState> {
       return (
         <div className="p-3 p-md-5 container">
           <div className="col-md-8 mx-auto p-0">
-            <div className="stage shadow jumbotron bg-white pt-5 pb-1 mb-0">
+            <div className="stage shadow jumbotron bg-light-gray pt-5 pb-1 mb-0">
               <h1 className="display-4">Done!</h1>
               <p className="text-muted">
                 Thank you for answering the questions :)
@@ -152,7 +152,7 @@ class Questions extends React.Component<QuestionsProps, QuestionsState> {
             {this.state.switching && this.state.questions.length > this.state.currentQuestion + 1 && <Question switching="in" question={this.state.questions[this.state.currentQuestion + 1]} />}
             {this.state.switching && this.state.questions.length === this.state.currentQuestion + 1 && (
               <div className="stage shadow switching in">
-                <div className="jumbotron bg-white pt-5 pb-1 mb-0">
+                <div className="jumbotron bg-light-gray pt-5 pb-1 mb-0">
                   <h1 className="display-4">Done!</h1>
                   <p className="text-muted">
                     Thank you for answering the questions :)

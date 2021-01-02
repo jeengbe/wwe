@@ -66,7 +66,7 @@ class Stats extends React.Component<StatsProps, StatsState> {
     const maxS = 60;
     const minL = 60;
     const maxL = 90;
-    this.h += Math.floor(Math.random() * 15) + 15;
+    this.h += Math.floor(Math.random() * 25) + 15;
     if (this.h > 360) {
       this.h %= 360;
     }
@@ -121,7 +121,7 @@ class Stats extends React.Component<StatsProps, StatsState> {
         return (
           <div className="p-3 p-md-5 container">
             <div className="col-md-8 mx-auto p-0">
-              <div className="jumbotron shadow">
+              <div className="jumbotron bg-light-gray shadow">
                 <h1 className="display-4">Uh-Oh!</h1>
                 <p className="text-muted">
                   An error occured whilst loading the page: <span className="text-danger">{this.state.error.toString()}</span>
@@ -139,7 +139,7 @@ class Stats extends React.Component<StatsProps, StatsState> {
         return (
           <div className="p-3 p-md-5 container">
             <div className="col-md-8 mx-auto p-0">
-              <div className="jumbotron bg-white shadow">
+              <div className="jumbotron bg-light-gray shadow">
                 <div className="spinner-border d-none d-sm-block float-right mt-5" />
                 <h1 className="display-4">Fetching data</h1>
                 <p className="text-muted">Hang on, this may take a second.</p>

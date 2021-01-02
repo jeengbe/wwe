@@ -1,5 +1,6 @@
 <?php
 header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json");
 ini_set('session.gc_maxlifetime', 60 * 60 * 24 * 365);
 session_set_cookie_params(60 * 60 * 24 * 365);
 session_start();
@@ -32,6 +33,7 @@ foreach($incs as $incp => $incf) {
     }
   }
   $inc = $incf;
+  break;
 }
 
 if ($inc !== null) {
