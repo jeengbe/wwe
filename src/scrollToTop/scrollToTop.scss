@@ -11,7 +11,7 @@ $padd: 10px;
   border-radius: $dims;
   border: 0;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-  transition: right .3s ease-out, opacity .3s ease-out, background-color .3s ease-in-out;
+  transition: right .2s ease-out, opacity .1s ease-out, background-color .3s ease-in-out;
   opacity: 0;
   will-change: right, opacity, background-color;
   text-align: center;

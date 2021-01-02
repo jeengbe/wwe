@@ -75,11 +75,11 @@ class Stats extends React.Component<StatsProps, StatsState> {
    */
   public colors(length: number): string[] {
     const r: string[] = [];
+    this.h = Math.floor(Math.random() * 255);
     for (let i = 0; i < length; i++) {
       let c;
       do {
         c = this.color();
-        console.log(c);
       } while (r.includes(c));
       r.push(c);
     }
@@ -173,7 +173,7 @@ class Stats extends React.Component<StatsProps, StatsState> {
         <>
           <ScrollToTop />
           <div className="p-3 p-md-5 container">
-            <div className="col-md-8 mx-auto p-0">
+            <div className="col-md-10 mx-auto p-0">
               <h1 className="w-100 display-4 mb-5 text-center">Statistics for {this.state.stats.set.name}</h1>
               {questions}
             </div>

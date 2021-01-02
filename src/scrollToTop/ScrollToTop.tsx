@@ -8,7 +8,7 @@ interface ScrollToTopState {
 }
 
 class ScrollToTop extends React.Component<ScrollToTopProps, ScrollToTopState> {
-  private readonly threshold: number = 50;
+  private readonly threshold: number = 5;
   private readonly scrollListener: () => void = (): void =>
     this.setState({
       show: window.scrollY > this.threshold,
