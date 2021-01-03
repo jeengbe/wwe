@@ -80,12 +80,12 @@ class Questions extends React.Component<QuestionsProps, QuestionsState> {
         <div className="p-3 p-md-5 container">
           <div className="col-md-8 mx-auto p-0">
             <div className="jumbotron bg-light-gray shadow">
-              <h1 className="display-4">Whoops!</h1>
+              <h1 className="display-4">Oops!</h1>
               <p className="text-muted">
-                An error occured whilst loading the page: <span className="text-danger">{this.state.error.toString()}</span>
+                Beim Laden der Seite ist ein Fehler aufgetreten: <span className="text-danger">{this.state.error.toString()}</span>
               </p>
               <p className="text-muted">
-                Please <a href="mailto:jesper.engberg@gmx.at">report this</a>!
+                Bitte <a href="mailto:jesper.engberg@gmx.at">melden</a>!
               </p>
             </div>
           </div>
@@ -107,8 +107,8 @@ class Questions extends React.Component<QuestionsProps, QuestionsState> {
           <div className="col-md-8 mx-auto p-0">
             <div className="jumbotron bg-light-gray shadow">
               <div className="spinner-border d-none d-sm-block float-right mt-5" />
-              <h1 className="display-4">Booting up</h1>
-              <p className="text-muted">Loading Questions..{new Array(this.state.loadingDots).fill(".")}</p>
+              <h1 className="display-4">Startet</h1>
+              <p className="text-muted">Fragen werden geladen..{new Array(this.state.loadingDots).fill(".")}</p>
             </div>
           </div>
         </div>
@@ -119,11 +119,11 @@ class Questions extends React.Component<QuestionsProps, QuestionsState> {
         <div className="p-3 p-md-5 container">
           <div className="col-md-8 mx-auto p-0">
             <div className="stage shadow jumbotron bg-light-gray pt-5 pb-1 mb-0">
-              <h1 className="display-4">Done!</h1>
+              <h1 className="display-4">Fertig!</h1>
               <p className="text-muted">
-                Thank you for answering the questions :)
+                Danke, dass Du alle Fragen beantwortet hast :)
                 <br />
-                You can find the results <a href={"stats/" + this.props.ident}>here</a>.
+                Du kannst die Ergebnisse <a href={"stats/" + this.props.ident}>hier</a> finden.
               </p>
             </div>
           </div>
@@ -153,11 +153,11 @@ class Questions extends React.Component<QuestionsProps, QuestionsState> {
             {this.state.switching && this.state.questions.length === this.state.currentQuestion + 1 && (
               <div className="stage shadow switching in">
                 <div className="jumbotron bg-light-gray pt-5 pb-1 mb-0">
-                  <h1 className="display-4">Done!</h1>
+                  <h1 className="display-4">Fertig!</h1>
                   <p className="text-muted">
-                    Thank you for answering the questions :)
+                    Danke, dass Du alle Fragen beantwortet hast :)
                     <br />
-                    You can find the results <a href={"stats/" + this.props.ident}>here</a>.
+                    Du kannst die Ergebnisse <a href={"stats/" + this.props.ident}>hier</a> finden.
                   </p>
                 </div>
               </div>

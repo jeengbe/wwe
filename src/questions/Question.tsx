@@ -167,20 +167,20 @@ class Question extends React.Component<QuestionProps, QuestionState> {
     if ((question as IQuestionExactly).exactly !== undefined) {
       const q = question as IQuestionExactly;
       q.exactly = q.exactly === undefined ? 1 : q.exactly;
-      selections = "Select " + q.exactly + " option" + (q.exactly === 1 ? "" : "s") + ".";
+      selections = "Wähle " + q.exactly + " Option" + (q.exactly === 1 ? "" : "en") + ".";
     } else {
       const q = question as IQuestionRange;
 
       q.min = q.min === undefined ? 1 : q.min;
       if (q.min !== 0) {
         if (q.max === undefined) {
-          selections = "Select at least " + q.min + " option" + (q.min === 1 ? "" : "s") + ".";
+          selections = "Wähle mindestens " + q.min + " Option" + (q.min === 1 ? "" : "en") + ".";
         } else {
-          selections = "Select between " + q.min + " and " + q.max + " options.";
+          selections = "Wähle " + q.min + " bis " + q.max + " Optionen.";
         }
       } else {
         if (q.max !== undefined) {
-          selections = "Select at most " + q.max + " option" + (q.max === 1 ? "" : "s") + ".";
+          selections = "Wähle höchstens " + q.max + " Option" + (q.max === 1 ? "" : "en") + ".";
         } else {
           selections = "<p class='text-error'>This condition should not be possible</p>";
         }
@@ -218,7 +218,7 @@ class Question extends React.Component<QuestionProps, QuestionState> {
     return (
       <div className={classes} onAnimationEnd={this.props.switching === undefined ? undefined : this.props.onAnimationDone}>
         <button disabled={!valid} ref={this.btnNextRef} className={"shadow w-100 btn btn-" + (valid ? "success" : "secondary")} onClick={valid ? () => this.nextQuestion() : undefined} style={{ borderBottomLeftRadius: 0, borderBottomRightRadius: 0, transition: "all .3s" }}>
-          Next
+          Weiter
         </button>
         <div className="jumbotron bg-light-gray pt-5 pb-1 mb-0 rounded-0">
           <h2>{question.title}</h2>
@@ -242,7 +242,7 @@ class Question extends React.Component<QuestionProps, QuestionState> {
               </div>
             </label>
           ))}
-          {optionsFiltered.length === 0 && <li className="list-group-item disabled py-1">No results</li>}
+          {optionsFiltered.length === 0 && <li className="list-group-item disabled py-1">Keine Treffer</li>}
         </ul>
       </div>
     );

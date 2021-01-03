@@ -7,7 +7,7 @@ import "./index.scss";
 import Stats from "./stats/Stats";
 import Insert from "./Insert";
 
-export const API_BASE = "http://localhost:83/";
+export const API_BASE = "https://wwe.localhost/";
 
 interface AppState {}
 

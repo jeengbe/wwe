@@ -18,9 +18,9 @@ class Insert extends React.Component {
     return (
       <div className="p-3 p-md-5 container">
         <div className="col-md-8 mx-auto p-0">
-          <input className="form-control w-75 float-left" ref={this.i} placeholder="Question" />
+          <input className="form-control w-75 float-left" ref={this.i} placeholder="Frage" />
           <button className="btn btn-success w-25 float-right" onClick={() => this.submit()}>
-            Submit
+            Einsenden
           </button>
         </div>
       </div>

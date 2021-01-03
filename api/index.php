@@ -1,11 +1,11 @@
 <?php
-header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
+
 ini_set('session.gc_maxlifetime', 60 * 60 * 24 * 365);
 session_set_cookie_params(60 * 60 * 24 * 365);
 session_start();
 $URL = explode("/", $_GET["api"] ?? "");
-$DB = new mysqli("localhost", "root", "", "wwe");
+$DB = new mysqli("localhost", "wwe", "", "wwe");
 
 $sid = session_id();
 $sql = $DB->prepare("SELECT ID FROM sessions as s WHERE s.sessid = ? ORDER BY ID DESC");

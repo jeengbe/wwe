@@ -45,8 +45,6 @@ interface StatsState {
 }
 
 class Stats extends React.Component<StatsProps, StatsState> {
-  private comingo = false;
-
   constructor(props: StatsProps) {
     super(props);
     this.state = {
@@ -109,121 +107,112 @@ class Stats extends React.Component<StatsProps, StatsState> {
   }
 
   render(): JSX.Element {
-    if (this.comingo) {
+    if (this.state.error !== null) {
       return (
-        <>
-          <h1 className="display-4 text-center mt-5">Comingo Sooningo</h1>
-          <p className="text-muted text-center">Stay tuned.</p>
-        </>
-      );
-    } else {
-      if (this.state.error !== null) {
-        return (
-          <div className="p-3 p-md-5 container">
-            <div className="col-md-8 mx-auto p-0">
-              <div className="jumbotron bg-light-gray shadow">
-                <h1 className="display-4">Uh-Oh!</h1>
-                <p className="text-muted">
-                  An error occured whilst loading the page: <span className="text-danger">{this.state.error.toString()}</span>
-                </p>
-                <p className="text-muted">
-                  Please <a href="mailto:jesper.engberg@gmx.at">report this</a>!
-                </p>
-              </div>
-            </div>
-          </div>
-        );
-      }
-
-      if (this.state.stats === null) {
-        return (
-          <div className="p-3 p-md-5 container">
-            <div className="col-md-8 mx-auto p-0">
-              <div className="jumbotron bg-light-gray shadow">
-                <div className="spinner-border d-none d-sm-block float-right mt-5" />
-                <h1 className="display-4">Fetching data</h1>
-                <p className="text-muted">Hang on, this may take a second.</p>
-              </div>
-            </div>
-          </div>
-        );
-      }
-
-      const questions = this.state.stats.questions.map((question, index) => {
-        // Formulate selections
-        let selections;
-        if ((question as IQuestionExactly).exactly !== undefined) {
-          const q = question as IQuestionExactly;
-          q.exactly = q.exactly === undefined ? 1 : q.exactly;
-          selections = "Exactly " + q.exactly + " option" + (q.exactly === 1 ? "" : "s") + " selected.";
-        } else {
-          const q = question as IQuestionRange;
-
-          q.min = q.min === undefined ? 1 : q.min;
-          if (q.min !== 0) {
-            if (q.max === undefined) {
-              selections = "At least " + q.min + " option" + (q.min === 1 ? "" : "s") + " selected.";
-            } else {
-              selections = "Between " + q.min + " and " + q.max + " options selected.";
-            }
-          } else {
-            if (q.max === undefined) {
-              selections = "At most " + q.max + " option" + (q.max === 1 ? "" : "s") + " selected.";
-            } else {
-              selections = "<p class='text-error'>This condition should not be possible</p>";
-            }
-          }
-        }
-
-        return (
-          <div key={question.title} className={"w-100 jumbotron py-4 shadow bg-white " + (index + 1 === this.state.stats?.questions.length ? "mb-0" : "")}>
-            <h3 className="mb-3">{question.title}</h3>
-            {question.description !== undefined && <p className="text-muted">{question.description}</p>}
-            <p className="text-muted font-weight-light">{selections}</p>
-            {question.options === "not enough data" ? (
-              <p className="text-muted text-center mt-5">
-                <abbr title={"At least " + this.state.stats?.minAns + " answer" + (this.state.stats?.minAns !== 1 ? "s are" : " is") + " required to retain anonymity."}>Not enough data</abbr>
+        <div className="p-3 p-md-5 container">
+          <div className="col-md-8 mx-auto p-0">
+            <div className="jumbotron bg-light-gray shadow">
+              <h1 className="display-4">Oh-Oh!</h1>
+              <p className="text-muted">
+                Beim Laden der Seite ist ein Fehler aufgetreten: <span className="text-danger">{this.state.error.toString()}</span>
               </p>
-            ) : (
-              <>
-                <Doughnut
-                  data={{
-                    datasets: [
-                      {
-                        data: question.options.filter(op => op.count > 0).map(op => op.count),
-                        backgroundColor: this.colors(question.options.filter(op => op.count > 0).length),
-                      },
-                    ],
-                    labels: question.options.filter(op => op.count > 0).map(op => op.option.name),
-                  }}
-                />
-              </>
-            )}
-            <p className="figure-caption mt-3 text-right">
-              {question.answers} answer{question.answers !== 1 ? "s" : ""}
-              {question.optNr !== question.answers && (
-                <>
-                  <br />
-                  {question.optNr} selected option{question.answers !== 1 ? "s" : ""}
-                </>
-              )}
-            </p>
-          </div>
-        );
-      });
-
-      return (
-        <>
-          <ScrollToTop />
-          <div className="p-3 p-md-5 container">
-            <div className="col-md-10 mx-auto p-0">
-              <h1 className="w-100 display-4 mb-5 text-center">Statistics for {this.state.stats.set.name}</h1>
-              {questions}
+              <p className="text-muted">
+                Bitte <a href="mailto:jesper.engberg@gmx.at">melden</a>!
+              </p>
             </div>
           </div>
-        </>
+        </div>
       );
     }
+
+    if (this.state.stats === null) {
+      return (
+        <div className="p-3 p-md-5 container">
+          <div className="col-md-8 mx-auto p-0">
+            <div className="jumbotron bg-light-gray shadow">
+              <div className="spinner-border d-none d-sm-block float-right mt-5" />
+              <h1 className="display-4">Daten laden</h1>
+              <p className="text-muted">Etwas Geduld bitte, dies kann einen Moment dauern.</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    const questions = this.state.stats.questions.map((question, index) => {
+      // Formulate selections
+      let selections;
+      if ((question as IQuestionExactly).exactly !== undefined) {
+        const q = question as IQuestionExactly;
+        q.exactly = q.exactly === undefined ? 1 : q.exactly;
+        selections = "Genau " + q.exactly + " Option" + (q.exactly === 1 ? "" : "en") + " wählbar.";
+      } else {
+        const q = question as IQuestionRange;
+
+        q.min = q.min === undefined ? 1 : q.min;
+        if (q.min !== 0) {
+          if (q.max === undefined) {
+            selections = "Mindestens " + q.min + " Option" + (q.min === 1 ? "" : "en") + " wählbar.";
+          } else {
+            selections = q.min + " bis " + q.max + " Optionen wählbar.";
+          }
+        } else {
+          if (q.max === undefined) {
+            selections = "Bis zu " + q.max + " Option" + (q.max === 1 ? "" : "en") + " wählbar.";
+          } else {
+            selections = "<p class='text-error'>Diese Bedingung sollte nicht erreicht werden können</p>";
+          }
+        }
+      }
+
+      return (
+        <div key={question.title} className={"w-100 jumbotron py-4 shadow bg-white " + (index + 1 === this.state.stats?.questions.length ? "mb-0" : "")}>
+          <h3 className="mb-3">{question.title}</h3>
+          {question.description !== undefined && <p className="text-muted">{question.description}</p>}
+          <p className="text-muted font-weight-light">{selections}</p>
+          {question.options === "not enough data" ? (
+            <p className="text-muted text-center mt-5">
+              <abbr title={"Mindestens " + this.state.stats?.minAns + " Antwort" + (this.state.stats?.minAns !== 1 ? "en sind" : " ist") + " nötig, um Anonymität zu wahren."}>Nicht ausreichend Daten</abbr>
+            </p>
+          ) : (
+            <>
+              <Doughnut
+                data={{
+                  datasets: [
+                    {
+                      data: question.options.filter(op => op.count > 0).map(op => op.count),
+                      backgroundColor: this.colors(question.options.filter(op => op.count > 0).length),
+                    },
+                  ],
+                  labels: question.options.filter(op => op.count > 0).map(op => op.option.name),
+                }}
+              />
+            </>
+          )}
+          <p className="figure-caption mt-3 text-right">
+            {question.answers} Antwort{question.answers !== 1 ? "en" : ""}
+            {question.optNr !== question.answers && (
+              <>
+                <br />
+                {question.optNr} gewählte Option{question.answers !== 1 ? "en" : ""}
+              </>
+            )}
+          </p>
+        </div>
+      );
+    });
+
+    return (
+      <>
+        <ScrollToTop />
+        <div className="p-3 p-md-5 container">
+          <div className="col-md-10 mx-auto p-0">
+            <h1 className="w-100 display-4 mb-5 text-center">Statistiken von {this.state.stats.set.name}</h1>
+            {questions}
+          </div>
+        </div>
+      </>
+    );
   }
 }
 
