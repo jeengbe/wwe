@@ -85,7 +85,7 @@ class Questions extends React.Component<QuestionsProps, QuestionsState> {
                 Beim Laden der Seite ist ein Fehler aufgetreten: <span className="text-danger">{this.state.error.toString()}</span>
               </p>
               <p className="text-muted">
-                Bitte <a href="mailto:jesper.engberg@gmx.at">melden</a>!
+                Bitte <a href={"mailto:jesper.engberg@gmx.at?subject=Error: " + encodeURIComponent(this.state.error.toString())}>melden</a>!
               </p>
             </div>
           </div>
