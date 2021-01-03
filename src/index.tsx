@@ -23,8 +23,8 @@ class App extends React.Component<{}, AppState> {
       handle: path => <Stats ident={path[1]} />,
     },
     {
-      path: "insert",
-      handle: () => <Insert />,
+      path: "insert/_",
+      handle: path => <Insert ident={path[1]} />,
     },
     {
       path: "_",
@@ -73,5 +73,6 @@ window.addEventListener("popstate", e => {
 
 (window as {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Chart: any
-} & typeof window & typeof globalThis).Chart.defaults.global.defaultFontFamily = "'Nunito', sans-serif";
+  Chart: any;
+} & typeof window &
+  typeof globalThis).Chart.defaults.global.defaultFontFamily = "'Nunito', sans-serif";

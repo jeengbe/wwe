@@ -22,7 +22,8 @@ $incs = [
   "questions/option/_/_" => "questions/option.php",
   "questions/next/_" => "questions/next.php",
   "stats/_" => "stats.php",
-  "insert" => "insert.php"
+  "insert/question/set/_" => "insert/question/set.php",
+  "insert/question/insert/_" => "insert/question/insert.php",
 ];
 
 foreach($incs as $incp => $incf) {

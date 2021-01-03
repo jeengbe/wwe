@@ -13,7 +13,7 @@ $sql->execute();
 $sql->close();
 
 // Check set ident
-$sql = $DB->prepare("SELECT s.id FROM sets as s WHERE s.ident = ?");
+$sql = $DB->prepare("SELECT s.ID FROM sets as s WHERE s.ident = ?");
 $sql->bind_param("s", $URL[2]);
 $sql->execute();
 if (!$sql->fetch()) {
