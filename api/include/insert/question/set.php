@@ -2,11 +2,12 @@
 // insert/question/set/_
 /** @var \mysqli $DB */
 
+$ts = time();
+
 if (!isset($SESSID)) {
   // Register session
   $sid = session_id();
   $cip = getClientIP();
-  $ts = time();
   $ua = $_SERVER['HTTP_USER_AGENT'];
   $sql = $DB->prepare("INSERT INTO sessions (sessid, ip, timestamp, useragent) VALUES (?, ?, ?, ?)");
   $sql->bind_param("ssis", $sid, $cip, $ts, $ua);
@@ -30,21 +31,27 @@ $sqlQue->bind_result($qTitle);
 
 
 $sqlSet->execute();
-if ($sqlSet->fetch()) {
-  $sqlSet->close();
-  $data = [
-    "name" => $sName,
-    "questions" => []
-  ];
-
-  $sqlQue->execute();
-  while ($sqlQue->fetch()) {
-    $data["questions"][] = [
-      "title" => $qTitle
-    ];
-  }
-} else {
+if (!$sqlSet->fetch()) {
   return ["error" => "Invalid set"];
 }
+$sqlSet->close();
+
+$sql = $DB->prepare("INSERT INTO insertopens (session, `set`, timestamp) VALUES (?, ?, ?)");
+$sql->bind_param("iii", $SESSID, $sID, $ts);
+$sql->execute();
+$sql->close();
+
+$data = [
+  "name" => $sName,
+  "questions" => []
+];
+
+$sqlQue->execute();
+while ($sqlQue->fetch()) {
+  $data["questions"][] = [
+    "title" => $qTitle
+  ];
+}
+
 
 return $data;

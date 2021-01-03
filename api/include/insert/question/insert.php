@@ -27,6 +27,6 @@ $sql->execute();
 $qID = $DB->insert_id;
 $sql->close();
 
-$sql = $DB->prepare("INSERT INTO questioninserters (question, sessid, timestamp) VALUES (?, ?, ?)");
+$sql = $DB->prepare("INSERT INTO questioninserters (question, session, timestamp) VALUES (?, ?, ?)");
 $sql->bind_param("iii", $qID, $SESSID, $ts);
 $sql->execute();
