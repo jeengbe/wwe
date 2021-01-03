@@ -13,7 +13,7 @@ if (!isset($_POST["question"])) {
 $ts = time();
 
 $sql = $DB->prepare("SELECT s.ID FROM sets AS s WHERE s.ident = ?");
-$sql->bind_param("i", $URL[3]);
+$sql->bind_param("s", $URL[3]);
 $sql->bind_result($sID);
 $sql->execute();
 if(!$sql->fetch()) {
