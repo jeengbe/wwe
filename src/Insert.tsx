@@ -100,15 +100,15 @@ class Insert extends React.Component<InsertProps, InsertState> {
     const questions = this.state.set.questions.map(question => <h5 key={question.title}>{question.title}</h5>);
 
     return (
-      <h4>
+      <>
         <ScrollToTop />
         <div className="p-3 p-md-5 container">
           <div className="col-md-10 mx-auto p-0">
             <h1 className="w-100 display-4 text-center">Fragen für {this.state.set.name}</h1>
             <h4 className="mt-5">Frage hinzufügen:</h4>
             <form onSubmit={e => this.submit(e)}>
-              <input className="form-control w-75 float-left" placeholder="Frage" ref={this.questionRef} />
-              <button className="btn btn-success float-right" type="submit">
+              <input className="form-control w-75 float-left mt-2 mt-md-0" placeholder="Frage" ref={this.questionRef} />
+              <button className="btn btn-success float-none float-md-right mt-2 mt-md-0" type="submit">
                 Absenden
               </button>
             </form>
@@ -117,7 +117,7 @@ class Insert extends React.Component<InsertProps, InsertState> {
             {questions}
           </div>
         </div>
-      </h4>
+      </>
     );
   }
 }
