@@ -107,7 +107,7 @@ class Questions extends React.Component<QuestionsProps, QuestionsState> {
           <div className="col-md-8 mx-auto p-0">
             <div className="jumbotron bg-light-gray shadow">
               <div className="spinner-border d-none d-sm-block float-right mt-5" />
-              <h1 className="display-4">Startet</h1>
+              <h1 className="display-4">Los geht&apos;s!</h1>
               <p className="text-muted">Fragen werden geladen..{new Array(this.state.loadingDots).fill(".")}</p>
             </div>
           </div>

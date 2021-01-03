@@ -131,7 +131,7 @@ class Stats extends React.Component<StatsProps, StatsState> {
           <div className="col-md-8 mx-auto p-0">
             <div className="jumbotron bg-light-gray shadow">
               <div className="spinner-border d-none d-sm-block float-right mt-5" />
-              <h1 className="display-4">Daten laden</h1>
+              <h1 className="display-4">Daten werden geladen</h1>
               <p className="text-muted">Etwas Geduld bitte, dies kann einen Moment dauern.</p>
             </div>
           </div>
@@ -207,7 +207,7 @@ class Stats extends React.Component<StatsProps, StatsState> {
         <ScrollToTop />
         <div className="p-3 p-md-5 container">
           <div className="col-md-10 mx-auto p-0">
-            <h1 className="w-100 display-4 mb-5 text-center">Statistiken von {this.state.stats.set.name}</h1>
+            <h1 className="w-100 display-4 mb-5 text-center">Statistiken für {this.state.stats.set.name}</h1>
             {questions}
           </div>
         </div>
