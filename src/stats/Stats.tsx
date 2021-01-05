@@ -76,7 +76,6 @@ class Stats extends React.Component<StatsProps, StatsState> {
       error: null,
       loadingTime: 0,
     };
-    this.loadStats();
   }
 
   public h = 0;
@@ -124,8 +123,11 @@ class Stats extends React.Component<StatsProps, StatsState> {
 
     await new Promise(x => setTimeout(x, 300));
 
+    const statsR = await stats;
+    document.title = "Stats: " + statsR.set.name;
+
     this.setState({
-      stats: await stats,
+      stats: statsR,
       loadingTime: new Date().getTime() - loadingStarted,
     });
   }
