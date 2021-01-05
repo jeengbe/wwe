@@ -8,7 +8,7 @@ if (!isset($SESSID)) {
 
 $ts = time();
 
-$sql = $DB->prepare("SELECT q.ID FROM questions AS q WHERE q.ident = ?");
+$sql = $DB->prepare("SELECT q.ID FROM question q WHERE q.ident = ?");
 $sql->bind_result($qID);
 $sql->bind_param("s", $URL[2]);
 $sql->execute();

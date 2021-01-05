@@ -16,25 +16,43 @@ interface IQuestionExactly {
   exactly?: number;
 }
 
+type Question = {
+  title: string;
+  answers: number;
+  optNr: number;
+  description?: string;
+  group: boolean;
+} & XOR<IQuestionRange, IQuestionExactly> & {
+    options: "not enough data";
+  } & (
+    | {
+        group: true;
+        options: {
+          group: {
+            label: string;
+            count: number;
+          }[];
+          standard: {
+            label: string;
+            count: number;
+          }[];
+        };
+      }
+    | {
+        group: false;
+        options: {
+          label: string;
+          count: number;
+        }[];
+      }
+  );
+
 interface ISetStats {
   minAns: number;
   set: {
     name: string;
   };
-  questions: ({
-    title: string;
-    answers: number;
-    optNr: number;
-    description?: string;
-    options:
-      | {
-          option: {
-            name: string;
-          };
-          count: number;
-        }[]
-      | "not enough data";
-  } & XOR<IQuestionRange, IQuestionExactly>)[];
+  questions: Question[];
 }
 
 interface StatsState {
@@ -45,6 +63,12 @@ interface StatsState {
 }
 
 class Stats extends React.Component<StatsProps, StatsState> {
+  protected hints: {
+    chartClick: boolean;
+  } = {
+    chartClick: false,
+  };
+
   constructor(props: StatsProps) {
     super(props);
     this.state = {
@@ -160,9 +184,48 @@ class Stats extends React.Component<StatsProps, StatsState> {
           if (q.max === undefined) {
             selections = "Bis zu " + q.max + " Option" + (q.max === 1 ? "" : "en") + " wählbar.";
           } else {
-            selections = "<p class='text-error'>Diese Bedingung sollte nicht erreicht werden können</p>";
+            selections = "<p className='text-error'>Diese Bedingung sollte nicht erreicht werden können</p>";
           }
         }
+      }
+
+      let graph: JSX.Element;
+      if (question.options === "not enough data") {
+        graph = (
+          <p className="text-muted text-center mt-5">
+            <abbr title={"Mindestens " + this.state.stats?.minAns + " Antwort" + (this.state.stats?.minAns !== 1 ? "en sind" : " ist") + " nötig, um Anonymität zu wahren."}>Nicht ausreichend Daten</abbr>
+          </p>
+        );
+      } else if (question.group === true) {
+        graph = (
+          <>
+            <Doughnut
+              data={{
+                datasets: [
+                  {
+                    data: question.options.group.map(op => op.count),
+                    backgroundColor: this.colors(question.options.group.length),
+                  },
+                ],
+                labels: question.options.group.map(op => op.label),
+              }}
+            />
+          </>
+        );
+      } else {
+        graph = (
+          <Doughnut
+            data={{
+              datasets: [
+                {
+                  data: question.options.map(op => op.count),
+                  backgroundColor: this.colors(question.options.length),
+                },
+              ],
+              labels: question.options.map(op => op.label),
+            }}
+          />
+        );
       }
 
       return (
@@ -170,31 +233,30 @@ class Stats extends React.Component<StatsProps, StatsState> {
           <h3 className="mb-3">{question.title}</h3>
           {question.description !== undefined && <p className="text-muted">{question.description}</p>}
           <p className="text-muted font-weight-light">{selections}</p>
-          {question.options === "not enough data" ? (
-            <p className="text-muted text-center mt-5">
-              <abbr title={"Mindestens " + this.state.stats?.minAns + " Antwort" + (this.state.stats?.minAns !== 1 ? "en sind" : " ist") + " nötig, um Anonymität zu wahren."}>Nicht ausreichend Daten</abbr>
-            </p>
-          ) : (
-            <>
-              <Doughnut
-                data={{
-                  datasets: [
-                    {
-                      data: question.options.filter(op => op.count > 0).map(op => op.count),
-                      backgroundColor: this.colors(question.options.filter(op => op.count > 0).length),
-                    },
-                  ],
-                  labels: question.options.filter(op => op.count > 0).map(op => op.option.name),
-                }}
-              />
-            </>
-          )}
+          {graph}
           <p className="figure-caption mt-3 text-right">
             {question.answers} Antwort{question.answers !== 1 ? "en" : ""}
-            {question.optNr !== question.answers && (
+            {((question as IQuestionExactly).exactly !== undefined ? question.optNr !== ((question as IQuestionExactly).exactly || 0) * question.answers : question.optNr !== question.answers) && (
               <>
                 <br />
                 {question.optNr} gewählte Option{question.answers !== 1 ? "en" : ""}
+                {localStorage.getItem("answersDifferentShown") !== "hide" && (
+                  <>
+                    <div className="alert alert-info text-center alert-dismissible fade show align-center py-3 mt-5">
+                      <b>Antworten</b> ist die Anzahl an Personen, die geantwortet haben, <b>gewählte Optionen</b> ist die Anzahl an gesamten gewählten Optionen
+                      <button
+                        type="button"
+                        className="close py-3"
+                        onClick={() => {
+                          localStorage.setItem("answersDifferentShown", "hide");
+                          this.forceUpdate();
+                        }}
+                      >
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                  </>
+                )}
               </>
             )}
           </p>
@@ -208,6 +270,21 @@ class Stats extends React.Component<StatsProps, StatsState> {
         <div className="p-3 p-md-5 container">
           <div className="col-md-10 mx-auto p-0">
             <h1 className="w-100 display-4 mb-5 text-center">Statistiken für {this.state.stats.set.name}</h1>
+            {localStorage.getItem("chartClick") !== "hide" && (
+              <div className="alert alert-info text-center alert-dismissible fade show align-center py-3">
+                Abschnitte der Diagramme können angeklickt werden, um den Datensatz mitsamt absolutem Wert anzuzeigen.
+                <button
+                  type="button"
+                  className="close py-3"
+                  onClick={() => {
+                    localStorage.setItem("chartClick", "hide");
+                    this.forceUpdate();
+                  }}
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            )}
             {questions}
           </div>
         </div>

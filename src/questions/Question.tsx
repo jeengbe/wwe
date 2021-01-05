@@ -191,7 +191,7 @@ class Question extends React.Component<QuestionProps, QuestionState> {
     let optionsFiltered;
 
     if (this.state.filterText.length === 0) {
-      optionsFiltered = this.optionsIndexed.sort((a, b) => (this.state.selectedIndices.includes(a.index) ? -1 : this.state.selectedIndices.includes(b.index) ? 1 : 0));
+      optionsFiltered = [...this.optionsIndexed].sort((a, b) => (this.state.selectedIndices.includes(b.index) ? 1 : this.state.selectedIndices.includes(a.index) ? -1 : 0));
     } else {
       optionsFiltered = new Fuse(this.optionsIndexed, {
         threshold: 0.3,

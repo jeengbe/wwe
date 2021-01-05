@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import Questions from "./questions/Questions";
-import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./index.scss";
 import Stats from "./stats/Stats";
