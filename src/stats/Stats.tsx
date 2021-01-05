@@ -76,6 +76,8 @@ class Stats extends React.Component<StatsProps, StatsState> {
       error: null,
       loadingTime: 0,
     };
+
+    this.loadStats();
   }
 
   public h = 0;
