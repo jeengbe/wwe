@@ -18,7 +18,7 @@ $sql->close();
 $inc = null;
 
 $incs = [
-  "questions/list/_" => "questions/list.php",
+  "set/load/_" => "questions/list.php",
   "questions/option/_/_" => "questions/option.php",
   "questions/next/_" => "questions/next.php",
   "stats/_" => "stats.php",

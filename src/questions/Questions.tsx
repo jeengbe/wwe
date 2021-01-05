@@ -8,8 +8,13 @@ interface QuestionsProps {
   ident: string;
 }
 
+interface Set {
+  name: string;
+  questions: IQuestion[];
+}
+
 interface QuestionsState {
-  questions: null | IQuestion[];
+  set: null | Set;
   currentQuestion: number;
   loadingTime: number;
   loadingDots: number;
@@ -22,7 +27,7 @@ class Questions extends React.Component<QuestionsProps, QuestionsState> {
   constructor(props: QuestionsProps) {
     super(props);
     this.state = {
-      questions: null,
+      set: null,
       currentQuestion: 0,
       loadingTime: 0,
       loadingDots: 0,
@@ -30,15 +35,15 @@ class Questions extends React.Component<QuestionsProps, QuestionsState> {
       error: null,
     };
 
-    this.loadQuestions();
+    this.loadSet();
   }
 
-  protected async loadQuestions() {
+  protected async loadSet() {
     // Do api call
     const loadingStarted = new Date().getTime();
 
-    const questions = API.POST<IQuestion[]>("api/questions/list/" + this.props.ident);
-    questions.catch(e =>
+    const set = API.POST<Set>("api/set/load/" + this.props.ident);
+    set.catch(e =>
       this.setState({
         error: e,
       })
@@ -46,9 +51,12 @@ class Questions extends React.Component<QuestionsProps, QuestionsState> {
 
     await new Promise(x => setTimeout(x, 300));
 
+    const setR = await set;
+    document.title = setR.name;
+
     // Update state
     this.setState({
-      questions: await questions,
+      set: setR,
       loadingTime: new Date().getTime() - loadingStarted,
     });
   }
@@ -93,7 +101,7 @@ class Questions extends React.Component<QuestionsProps, QuestionsState> {
       );
     }
 
-    if (this.state.questions === null) {
+    if (this.state.set === null) {
       setTimeout(
         () =>
           this.setState(oldState => ({
@@ -114,7 +122,7 @@ class Questions extends React.Component<QuestionsProps, QuestionsState> {
         </div>
       );
     }
-    if (this.state.questions.length === this.state.currentQuestion) {
+    if (this.state.set.questions.length === this.state.currentQuestion) {
       return (
         <div className="p-3 p-md-5 container">
           <div className="col-md-8 mx-auto p-0">
@@ -146,11 +154,11 @@ class Questions extends React.Component<QuestionsProps, QuestionsState> {
               key={this.state.currentQuestion}
               first={this.state.loadingTime > 150 && this.state.currentQuestion === 0}
               switching={this.state.switching ? "out" : undefined}
-              question={this.state.questions[this.state.currentQuestion]}
+              question={this.state.set.questions[this.state.currentQuestion]}
               onNextQuestion={() => this.nextQuestion()}
             />
-            {this.state.switching && this.state.questions.length > this.state.currentQuestion + 1 && <Question switching="in" question={this.state.questions[this.state.currentQuestion + 1]} />}
-            {this.state.switching && this.state.questions.length === this.state.currentQuestion + 1 && (
+            {this.state.switching && this.state.set.questions.length > this.state.currentQuestion + 1 && <Question switching="in" question={this.state.set.questions[this.state.currentQuestion + 1]} />}
+            {this.state.switching && this.state.set.questions.length === this.state.currentQuestion + 1 && (
               <div className="stage shadow switching in">
                 <div className="jumbotron bg-light-gray pt-5 pb-1 mb-0">
                   <h1 className="display-4">Fertig!</h1>

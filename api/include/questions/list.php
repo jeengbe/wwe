@@ -1,5 +1,5 @@
 <?php
-// questions/list/_
+// set/load/_
 /** @var \mysqli $DB */
 
 // Register session
@@ -13,13 +13,19 @@ $sql->execute();
 $sql->close();
 
 // Check set ident
-$sql = $DB->prepare("SELECT s.ID FROM sets s WHERE s.ident = ?");
+$sql = $DB->prepare("SELECT s.name FROM sets s WHERE s.ident = ?");
 $sql->bind_param("s", $URL[2]);
+$sql->bind_result($sName);
 $sql->execute();
 if (!$sql->fetch()) {
   return ["error" => "Invalid set"];
 }
 $sql->close();
+
+$data = [
+  "name" => $sName,
+  "questions" => []
+];
 
 $sql = $DB->prepare("SELECT q.id, q.ident, q.title, q.description, q.min, q.max, q.exactly FROM questions q JOIN sets s ON q.set = s.ID WHERE s.ident = ? AND q.id NOT IN (SELECT q.id FROM questions q JOIN options o JOIN sessions s JOIN answers a ON a.option = o.id AND o.question = q.id AND a.session = s.id WHERE s.sessid = ?)");
 $sql->bind_result($id, $ident, $title, $description, $min, $max, $exactly);
@@ -54,7 +60,7 @@ while ($sql->fetch()) {
       "name" => $oName
     ];
   }
-  $data[] = $q;
+  $data["questions"][] = $q;
 }
 
 return $data;

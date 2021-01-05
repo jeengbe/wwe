@@ -243,7 +243,7 @@ class Stats extends React.Component<StatsProps, StatsState> {
                 {localStorage.getItem("answersDifferentShown") !== "hide" && (
                   <>
                     <div className="alert alert-info text-center alert-dismissible fade show align-center py-3 mt-5">
-                      <b>Antworten</b> ist die Anzahl an Personen, die geantwortet haben, <b>gewählte Optionen</b> ist die Anzahl an gesamten gewählten Optionen
+                      <b>Antworten</b> ist die Anzahl an Personen, die geantwortet haben, <b>gewählte Optionen</b> ist die Anzahl an gesamten gewählten Optionen.
                       <button
                         type="button"
                         className="close py-3"
