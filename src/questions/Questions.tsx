@@ -148,6 +148,24 @@ class Questions extends React.Component<QuestionsProps, QuestionsState> {
       <>
         <ScrollToTop />
         <div className="p-3 p-md-5 container">
+          {localStorage.getItem("anonym") !== "hide" && (
+            <div className="col-md-8 mx-auto p-0">
+              <div className="alert alert-info text-center alert-dismissible fade show align-center py-3 shadow-sm">
+                Alle Angaben sind <b>anonym</b>.<br /><br />
+                Es ist, sofern nicht anders angegenen, erlaubt, sich selbst zu wählen.
+                <button
+                  type="button"
+                  className="close py-3"
+                  onClick={() => {
+                    localStorage.setItem("anonym", "hide");
+                    this.forceUpdate();
+                  }}
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            </div>
+          )}
           <div className="col-md-8 mx-auto p-0">
             <Question
               onAnimationDone={() =>

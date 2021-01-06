@@ -287,7 +287,7 @@ class Stats extends React.Component<StatsProps, StatsState> {
       return (
         <div key={question.title} className={"w-100 jumbotron py-4 shadow bg-white " + (index + 1 === this.state.stats?.questions.length ? "mb-0" : "")}>
           <h3 className="mb-3">{question.title}</h3>
-          {question.description !== undefined && <p className="text-muted">{question.description}</p>}
+          {question.description !== undefined && <p className="text-muted" dangerouslySetInnerHTML={{ __html: question.description } }></p>}
           <p className="text-muted font-weight-light">{selections}</p>
           {graph}
           <p className="figure-caption mt-5 float-right">
