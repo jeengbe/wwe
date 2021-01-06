@@ -5,17 +5,16 @@ define("MIN_ANS", 10);
 
 if (!isset($SESSID)) {
   // Register session
-  $sid = session_id();
   $cip = getClientIP();
   $ts = time();
   $ua = $_SERVER['HTTP_USER_AGENT'];
   $sql = $DB->prepare("INSERT INTO sessions (sessid, ip, timestamp, useragent) VALUES (?, ?, ?, ?)");
-  $sql->bind_param("ssis", $sid, $cip, $ts, $ua);
+  $sql->bind_param("ssis", $SID, $cip, $ts, $ua);
   $sql->execute();
   $sql->close();
   $sql = $DB->prepare("SELECT ID FROM sessions s WHERE s.sessid = ? ORDER BY ID DESC");
   $sql->bind_result($SESSID);
-  $sql->bind_param("s", $sid);
+  $sql->bind_param("s", $SID);
   $sql->execute();
   $sql->fetch();
   $sql->close();

@@ -1,16 +1,26 @@
 <?php
 header("Content-Type: application/json");
 
-ini_set('session.gc_maxlifetime', 60 * 60 * 24 * 365);
-session_set_cookie_params(60 * 60 * 24 * 365);
-session_start();
-$URL = explode("/", $_GET["api"] ?? "");
 $DB = new mysqli("localhost", "wwe", "", "wwe");
+$URL = explode("/", $_GET["api"] ?? "");
 
-$sid = session_id();
+
+if(isset($_COOKIE["sessid"])) {
+  $SID = $_COOKIE["sessid"];
+} else {
+  $sqlCheck = $DB->prepare("SELECT s.ID FROM sessions s WHERE s.sessid = ?");
+  $sqlCheck->bind_param("s", $SID);
+  $SID;
+  do {
+    $SID = md5(random_bytes(32));
+    $sqlCheck->execute();
+  } while($sqlCheck->fetch());
+  setcookie("sessid", $SID, time() + 60 * 60 * 24 * 365);
+}
+
 $sql = $DB->prepare("SELECT ID FROM sessions as s WHERE s.sessid = ? ORDER BY ID DESC");
 $sql->bind_result($SESSID);
-$sql->bind_param("s", $sid);
+$sql->bind_param("s", $SID);
 $sql->execute();
 $sql->fetch();
 $sql->close();
@@ -38,7 +48,7 @@ foreach($incs as $incp => $incf) {
 }
 
 if ($inc !== null) {
-  (function ($inc) use (&$DB, &$URL, &$SESSID) {
+  (function ($inc) use (&$DB, &$URL, &$SID, &$SESSID) {
     /** @var string $inc */
     $data = [];
     $data = include __DIR__ . "/include/$inc";
