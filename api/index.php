@@ -7,8 +7,8 @@ $URL = explode("/", $_GET["api"] ?? "");
 
 if (isset($_COOKIE["PHPSESSID"])) {
   $SID = $_COOKIE["PHPSESSID"];
-  setcookie("PHPSESSID", "", 0);
-  setcookie("sessid", $SID, time() + 60 * 60 * 24 * 365);
+  setcookie("PHPSESSID", "", 0, "/");
+  setcookie("sessid", $SID, time() + 60 * 60 * 24 * 365, "/");
 } else if (isset($_COOKIE["sessid"])) {
   $SID = $_COOKIE["sessid"];
 } else {
@@ -19,7 +19,7 @@ if (isset($_COOKIE["PHPSESSID"])) {
     $SID = md5(random_bytes(32));
     $sqlCheck->execute();
   } while($sqlCheck->fetch());
-  setcookie("sessid", $SID, time() + 60 * 60 * 24 * 365);
+  setcookie("sessid", $SID, time() + 60 * 60 * 24 * 365, "/");
 }
 
 $sql = $DB->prepare("SELECT ID FROM sessions as s WHERE s.sessid = ? ORDER BY ID DESC");
