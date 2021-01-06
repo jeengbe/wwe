@@ -234,7 +234,7 @@ class Stats extends React.Component<StatsProps, StatsState> {
                 datasets: [
                   {
                     data: question.options[this.state.showGroups.includes(index) ? "group" : "standard"].map(op => op.count),
-                    backgroundColor: this.colors(question.options.group.length),
+                    backgroundColor: this.colors(question.options[this.state.showGroups.includes(index) ? "group" : "standard"].length),
                   },
                 ],
                 labels: question.options[this.state.showGroups.includes(index) ? "group" : "standard"].map(op => op.label),
