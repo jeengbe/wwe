@@ -272,7 +272,7 @@ class Stats extends React.Component<StatsProps, StatsState> {
             {((question as IQuestionExactly).exactly !== undefined ? question.optNr !== ((question as IQuestionExactly).exactly || 0) * question.answers : question.optNr !== question.answers) && (
               <>
                 <br />
-                {question.optNr} gewählte Option{question.answers !== 1 ? "en" : ""}
+                {question.optNr} gewählte Option{question.optNr !== 1 ? "en" : ""}
               </>
             )}
           </p>
