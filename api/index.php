@@ -35,7 +35,8 @@ $incs = [
   "set/load/_" => "questions/list.php",
   "questions/option/_/_" => "questions/option.php",
   "questions/next/_" => "questions/next.php",
-  "stats/_" => "stats.php",
+  "stats/email/_" => "stats/email.php",
+  "stats/_" => "stats/stats.php",
   "insert/question/set/_" => "insert/question/set.php",
   "insert/question/insert/_" => "insert/question/insert.php",
 ];

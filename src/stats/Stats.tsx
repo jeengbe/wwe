@@ -53,6 +53,7 @@ interface ISetStats {
     name: string;
   };
   questions: Question[];
+  email: boolean;
 }
 
 interface StatsState {
@@ -61,9 +62,12 @@ interface StatsState {
   error: null | any;
   loadingTime: number;
   showGroups: number[];
+  email: boolean;
 }
 
 class Stats extends React.Component<StatsProps, StatsState> {
+  private emailRef = React.createRef<HTMLInputElement>();
+
   protected hints: {
     chartClick: boolean;
   } = {
@@ -77,6 +81,7 @@ class Stats extends React.Component<StatsProps, StatsState> {
       error: null,
       loadingTime: 0,
       showGroups: [],
+      email: false,
     };
 
     this.loadStats();
@@ -132,8 +137,12 @@ class Stats extends React.Component<StatsProps, StatsState> {
 
     this.setState({
       stats: statsR,
-      showGroups: statsR.questions.map((q, index) => ({...q, index: index})).filter(q => q.group).map(q => q.index),
+      showGroups: statsR.questions
+        .map((q, index) => ({ ...q, index: index }))
+        .filter(q => q.group)
+        .map(q => q.index),
       loadingTime: new Date().getTime() - loadingStarted,
+      email: statsR.email,
     });
   }
 
@@ -141,6 +150,15 @@ class Stats extends React.Component<StatsProps, StatsState> {
     this.setState(oldState => ({
       showGroups: oldState.showGroups.includes(index) ? oldState.showGroups.filter(el => el !== index) : [...oldState.showGroups, index],
     }));
+  }
+
+  private submitEmail() {
+    if (this.emailRef.current !== null) {
+      API.POST("api/stats/email/" + this.props.ident, { email: this.emailRef.current.value });
+      this.setState({
+        email: true,
+      });
+    }
   }
 
   render(): JSX.Element {
@@ -285,8 +303,23 @@ class Stats extends React.Component<StatsProps, StatsState> {
         <div className="p-3 p-md-5 container">
           <div className="col-md-10 mx-auto p-0">
             <h1 className="w-100 display-4 mb-5 text-center">Statistiken für {this.state.stats.set.name}</h1>
+            {this.state.stats.questions.filter(q => q.options === "not enough data").length > 0 && !this.state.email && (
+              <div className="jumbotron bg-white shadow">
+                <h5>Ich möchte benachrichtigt werden, wenn ausreichend Daten für eine Auswertung vorhanden sind:</h5>
+                <div className="form-row">
+                  <div className="col-8 col-md-9 col-lg-10">
+                    <input type="email" autoComplete="email" className="form-control" ref={this.emailRef} placeholder="E-Mail-Adresse" />
+                  </div>
+                  <div className="col-4 col-md-3 col-lg-2">
+                    <button className="btn btn-success w-100" onClick={() => this.submitEmail()}>
+                      Absenden
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
             {localStorage.getItem("chartClick") !== "hide" && (
-              <div className="alert alert-info text-center alert-dismissible fade show align-center py-3">
+              <div className="alert alert-info text-center alert-dismissible fade show align-center py-3 shadow-sm">
                 Abschnitte der Diagramme können angeklickt werden, um den Datensatz mitsamt absolutem Wert anzuzeigen.
                 <button
                   type="button"

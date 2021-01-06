@@ -1,7 +1,6 @@
 <?php
 // stats/_
 /** @var \mysqli $DB */
-define("MIN_ANS", 10);
 
 if (!isset($SESSID)) {
   // Register session
@@ -36,9 +35,17 @@ $sql->close();
 $sql = $DB->prepare("INSERT INTO stats (`session`, `set`, `timestamp`) VALUES (?, ?, ?)");
 $sql->bind_param("iii", $SESSID, $sID, $ts);
 $sql->execute();
+$sql->close();
 
 // Prepare stats
+$sql = $DB->prepare("SELECT m.ID FROM emails m JOIN sessions s ON m.session = s.ID WHERE s.sessid = ? AND m.set = ?");
+$sql->bind_param("si", $SID, $sID);
+$sql->execute();
+$gotEmail = $sql->fetch();
+$sql->close();
+
 $data["minAns"] = MIN_ANS;
+$data["email"] = $gotEmail;
 // Set
 $data["set"] = [
   "name" => $sName
