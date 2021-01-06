@@ -2,6 +2,7 @@ import React from "react";
 import { Doughnut } from "react-chartjs-2";
 import API from "src/API";
 import ScrollToTop from "src/scrollToTop/ScrollToTop";
+import * as chartjs from "chart.js";
 
 interface StatsProps {
   ident: string;
@@ -219,6 +220,26 @@ class Stats extends React.Component<StatsProps, StatsState> {
         }
       }
 
+      const options: chartjs.ChartOptions = {
+        tooltips: {
+          callbacks: {
+            label: (tooltipItem, data) => {
+              // @ts-ignore
+              const dataset = data.datasets[tooltipItem.datasetIndex];
+              // @ts-ignore
+              const total = dataset.data.reduce((previousValue, currentValue) => previousValue + currentValue);
+              const currentValue = dataset.data[tooltipItem.index];
+              const percentage = Math.floor((currentValue / total) * 100 + 0.5);
+              return currentValue + " ("+percentage + "%)";
+            },
+            title: function (tooltipItem, data) {
+              // @ts-ignore
+              return data.labels[tooltipItem[0].index];
+            },
+          },
+        },
+      };
+
       let graph: JSX.Element;
       if (question.options === "not enough data") {
         graph = (
@@ -230,6 +251,7 @@ class Stats extends React.Component<StatsProps, StatsState> {
         graph = (
           <>
             <Doughnut
+              options={options}
               data={{
                 datasets: [
                   {
@@ -248,6 +270,7 @@ class Stats extends React.Component<StatsProps, StatsState> {
       } else {
         graph = (
           <Doughnut
+            options={options}
             data={{
               datasets: [
                 {
@@ -319,7 +342,7 @@ class Stats extends React.Component<StatsProps, StatsState> {
             )}
             {localStorage.getItem("chartClick") !== "hide" && (
               <div className="alert alert-info text-center alert-dismissible fade show align-center py-3 shadow-sm">
-                Abschnitte der Diagramme können angeklickt werden, um den Datensatz mitsamt absolutem Wert anzuzeigen.
+                Abschnitte der Diagramme können angeklickt werden, um den Datensatz mitsamt absolutem Wert und Prozentzahl anzuzeigen.
                 <button
                   type="button"
                   className="close py-3"
