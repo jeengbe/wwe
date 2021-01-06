@@ -60,6 +60,7 @@ interface StatsState {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error: null | any;
   loadingTime: number;
+  showGroups: number[];
 }
 
 class Stats extends React.Component<StatsProps, StatsState> {
@@ -75,6 +76,7 @@ class Stats extends React.Component<StatsProps, StatsState> {
       stats: null,
       error: null,
       loadingTime: 0,
+      showGroups: [],
     };
 
     this.loadStats();
@@ -132,6 +134,12 @@ class Stats extends React.Component<StatsProps, StatsState> {
       stats: statsR,
       loadingTime: new Date().getTime() - loadingStarted,
     });
+  }
+
+  protected toggleShowGroups(index: number) {
+    this.setState(oldState => ({
+      showGroups: oldState.showGroups.includes(index) ? oldState.showGroups.filter(el => el !== index) : [...oldState.showGroups, index],
+    }));
   }
 
   render(): JSX.Element {
@@ -207,13 +215,16 @@ class Stats extends React.Component<StatsProps, StatsState> {
               data={{
                 datasets: [
                   {
-                    data: question.options.group.map(op => op.count),
+                    data: question.options[this.state.showGroups.includes(index) ? "group" : "standard"].map(op => op.count),
                     backgroundColor: this.colors(question.options.group.length),
                   },
                 ],
-                labels: question.options.group.map(op => op.label),
+                labels: question.options[this.state.showGroups.includes(index) ? "group" : "standard"].map(op => op.label),
               }}
             />
+            <button className="btn btn-primary float-left mt-5" onClick={() => this.toggleShowGroups(index)}>
+              Gruppierungen {this.state.showGroups.includes(index) ? "ausblenden" : "anzeigen"}
+            </button>
           </>
         );
       } else {
@@ -238,32 +249,31 @@ class Stats extends React.Component<StatsProps, StatsState> {
           {question.description !== undefined && <p className="text-muted">{question.description}</p>}
           <p className="text-muted font-weight-light">{selections}</p>
           {graph}
-          <p className="figure-caption mt-3 text-right">
+          <p className="figure-caption mt-5 float-right">
             {question.answers} Antwort{question.answers !== 1 ? "en" : ""}
             {((question as IQuestionExactly).exactly !== undefined ? question.optNr !== ((question as IQuestionExactly).exactly || 0) * question.answers : question.optNr !== question.answers) && (
               <>
                 <br />
                 {question.optNr} gewählte Option{question.answers !== 1 ? "en" : ""}
-                {localStorage.getItem("answersDifferentShown") !== "hide" && (
-                  <>
-                    <div className="alert alert-info text-center alert-dismissible fade show align-center py-3 mt-5">
-                      <b>Antworten</b> ist die Anzahl an Personen, die geantwortet haben, <b>gewählte Optionen</b> ist die Anzahl an gesamten gewählten Optionen.
-                      <button
-                        type="button"
-                        className="close py-3"
-                        onClick={() => {
-                          localStorage.setItem("answersDifferentShown", "hide");
-                          this.forceUpdate();
-                        }}
-                      >
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                  </>
-                )}
               </>
             )}
           </p>
+          <div className="clearfix" />
+          {((question as IQuestionExactly).exactly !== undefined ? question.optNr !== ((question as IQuestionExactly).exactly || 0) * question.answers : question.optNr !== question.answers) && localStorage.getItem("answersDifferentShown") !== "hide" && (
+            <div className="alert alert-info text-center alert-dismissible fade show align-center py-3 mt-3">
+              <b>Antworten</b> ist die Anzahl an Personen, die geantwortet haben, <b>gewählte Optionen</b> ist die Anzahl an gesamten gewählten Optionen.
+              <button
+                type="button"
+                className="close py-3"
+                onClick={() => {
+                  localStorage.setItem("answersDifferentShown", "hide");
+                  this.forceUpdate();
+                }}
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          )}
         </div>
       );
     });

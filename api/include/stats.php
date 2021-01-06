@@ -48,7 +48,7 @@ $data["set"] = [
 $data["questions"] = [];
 
 // Get all questions
-$sqlQue = $DB->prepare("SELECT (SELECT COUNT(DISTINCT a.session) FROM `answers` a JOIN options o ON a.option = o.ID WHERE o.question = q.ID), (SELECT COUNT(y.ID) FROM answers y JOIN options o ON y.option = o.ID WHERE y.status = 1 AND o.question = q.ID) - (SELECT COUNT(n.ID) FROM answers n JOIN options o ON n.option = o.ID WHERE n.status = 0 AND o.question = q.ID), q.ID, q.title, q.description, q.min, q.max, q.exactly, q.group FROM questions q WHERE q.set = ?");
+$sqlQue = $DB->prepare("SELECT (SELECT COUNT(n.ID) FROM nexts n WHERE n.question = q.ID), (SELECT COUNT(y.ID) FROM answers y JOIN options o ON y.option = o.ID WHERE y.status = 1 AND o.question = q.ID) - (SELECT COUNT(n.ID) FROM answers n JOIN options o ON n.option = o.ID WHERE n.status = 0 AND o.question = q.ID), q.ID, q.title, q.description, q.min, q.max, q.exactly, q.group FROM questions q WHERE q.set = ?");
 $sqlQue->bind_param("i", $sID);
 $sqlQue->bind_result($qAns, $qOptNr, $qID, $qTitle, $qDescription, $qMin, $qMax, $qExactly, $qGroup);
 
@@ -58,7 +58,7 @@ $sqlAns->bind_param("i", $qID);
 $sqlAns->bind_result($aLabel, $aNr);
 
 // Group answers per question ```$qID``` by answerer ```answers.session```
-$sqlAnsGrp = $DB->prepare("SELECT a, COUNT(a) FROM (SELECT GROUP_CONCAT(DISTINCT o.name SEPARATOR ', ') a FROM answers a JOIN options o ON a.option = o.ID WHERE (SELECT o.question FROM options o WHERE o.ID = a.option) = ? AND (SELECT COUNT(y.ID) FROM answers y WHERE y.status = 1 AND y.option = a.option AND y.session = a.session) - (SELECT COUNT(n.ID) FROM answers n WHERE n.status = 0 AND n.option = a.option AND n.session = a.session) > 0 GROUP BY a.session) a GROUP BY a");
+$sqlAnsGrp = $DB->prepare("SELECT a, COUNT(a) FROM (SELECT GROUP_CONCAT(DISTINCT o.name SEPARATOR ', ') a FROM answers a JOIN options o ON a.option = o.ID JOIN sessions s ON a.session = s.ID WHERE (SELECT o.question FROM options o WHERE o.ID = a.option) = ? AND (SELECT COUNT(y.ID) FROM answers y WHERE y.status = 1 AND y.option = a.option AND y.session = a.session) - (SELECT COUNT(n.ID) FROM answers n WHERE n.status = 0 AND n.option = a.option AND n.session = a.session) > 0 GROUP BY s.sessid) a GROUP BY a");
 $sqlAnsGrp->bind_param("i", $qID);
 $sqlAnsGrp->bind_result($aLabel, $aNr);
 
