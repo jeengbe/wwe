@@ -5,7 +5,11 @@ $DB = new mysqli("localhost", "wwe", "", "wwe");
 $URL = explode("/", $_GET["api"] ?? "");
 
 
-if(isset($_COOKIE["sessid"])) {
+if (isset($_COOKIE["PHPSESSID"])) {
+  $SID = $_COOKIE["PHPSESSID"];
+  setcookie("PHPSESSID", "", 0);
+  setcookie("sessid", $SID, time() + 60 * 60 * 24 * 365);
+} else if (isset($_COOKIE["sessid"])) {
   $SID = $_COOKIE["sessid"];
 } else {
   $sqlCheck = $DB->prepare("SELECT s.ID FROM sessions s WHERE s.sessid = ?");
