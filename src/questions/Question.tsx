@@ -183,7 +183,7 @@ class Question extends React.Component<QuestionProps, QuestionState> {
         }
       } else {
         if (q.max !== undefined) {
-          selections = "Wähle höchstens " + q.max + " Option" + (q.max === 1 ? "" : "en") + ".";
+          selections = "Wähle 1 bis " + q.max + " Option" + (q.max === 1 ? "" : "en") + ".";
         } else {
           selections = "Wähle mindestens 1 Option.";
         }

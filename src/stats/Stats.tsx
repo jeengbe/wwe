@@ -212,7 +212,7 @@ class Stats extends React.Component<StatsProps, StatsState> {
           }
         } else {
           if (q.max === undefined) {
-            selections = "Bis zu " + q.max + " Option" + (q.max === 1 ? "" : "en") + " wählbar.";
+            selections = "1 bis " + q.max + " Option" + (q.max === 1 ? "" : "en") + " wählbar.";
           } else {
             selections = "Mindestens 1 Option wählbar.";
           }
