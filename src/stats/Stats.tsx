@@ -132,6 +132,7 @@ class Stats extends React.Component<StatsProps, StatsState> {
 
     this.setState({
       stats: statsR,
+      showGroups: statsR.questions.map((q, index) => ({...q, index: index})).filter(q => q.group).map(q => q.index),
       loadingTime: new Date().getTime() - loadingStarted,
     });
   }
