@@ -134,12 +134,12 @@ class Question extends React.Component<QuestionProps, QuestionState> {
 
   componentDidUpdate() {
     if (this.props.switching === undefined) {
-      if (this.filterRef?.current !== document.activeElement && !isMobile()) {
-        if (this.isValidSelection()) {
+      if (this.isValidSelection()) {
+        if (this.filterRef?.current !== document.activeElement && !isMobile()) {
           this.btnNextRef?.current?.focus();
-        } else {
-          this.filterRef?.current?.focus();
         }
+      } else {
+        this.filterRef?.current?.focus();
       }
     }
   }
@@ -220,14 +220,14 @@ class Question extends React.Component<QuestionProps, QuestionState> {
     return (
       <div className={classes} onAnimationEnd={this.props.switching === undefined ? undefined : this.props.onAnimationDone}>
         <button disabled={!valid} ref={this.btnNextRef} className={"shadow w-100 btn btn-" + (valid ? "success" : "secondary")} onClick={valid ? () => this.nextQuestion() : undefined} style={{ borderBottomLeftRadius: 0, borderBottomRightRadius: 0, transition: "all .3s" }}>
-          Weiter
+          {valid ? (this.state.selectedIndices.length === 0 ? "Überspringen" : "Weiter") : "Weiter"}
         </button>
         <div style={{ width: "100%", height: "3px" }}>
           <div style={{ width: (100 / this.props.nrQuestions) * this.props.index + "%", height: "3px", backgroundColor: "#28a745", borderBottomRightRadius: ".175rem" }} />
         </div>
         <div className="jumbotron shadow bg-light-gray pt-5 pb-1 mb-0 rounded-0">
           <h2>{question.title}</h2>
-          {question.description !== undefined && <p className="text-muted">{question.description}</p>}
+          {question.description !== undefined && <p className="text-muted" dangerouslySetInnerHTML={{ __html: question.description }}></p>}
           <p className="text-muted font-weight-light pt-4" style={{ fontSize: "0.85rem" }}>
             {selections}
           </p>
