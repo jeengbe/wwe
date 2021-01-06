@@ -6,6 +6,7 @@ import API from "src/API";
 
 export interface Option {
   ident: string;
+  selected: boolean;
   name: string;
 }
 
@@ -29,10 +30,12 @@ export type IQuestion = {
 
 interface QuestionProps {
   question: IQuestion;
+  first?: boolean;
   onNextQuestion?: () => void;
   onAnimationDone?: () => void;
-  first?: boolean;
   switching?: "out" | "in";
+  nrQuestions: number;
+  index: number;
 }
 
 interface QuestionState {
@@ -49,16 +52,17 @@ class Question extends React.Component<QuestionProps, QuestionState> {
 
   constructor(props: QuestionProps) {
     super(props);
-    this.state = {
-      filterText: "",
-      selectedIndices: [],
-      nope: false,
-    };
 
     this.optionsIndexed = this.props.question.options.map((op, index) => ({
       ...op,
       index: index,
     }));
+
+    this.state = {
+      filterText: "",
+      selectedIndices: [...this.optionsIndexed].filter(op => op.selected).map(op => op.index),
+      nope: false,
+    };
   }
 
   /**
@@ -205,7 +209,6 @@ class Question extends React.Component<QuestionProps, QuestionState> {
     const classes = classNames({
       question: true,
       stage: true,
-      shadow: true,
       first: this.props.first,
       switching: this.props.switching !== undefined,
       out: this.props.switching === "out",
@@ -220,14 +223,17 @@ class Question extends React.Component<QuestionProps, QuestionState> {
         <button disabled={!valid} ref={this.btnNextRef} className={"shadow w-100 btn btn-" + (valid ? "success" : "secondary")} onClick={valid ? () => this.nextQuestion() : undefined} style={{ borderBottomLeftRadius: 0, borderBottomRightRadius: 0, transition: "all .3s" }}>
           Weiter
         </button>
-        <div className="jumbotron bg-light-gray pt-5 pb-1 mb-0 rounded-0">
+        <div style={{ width: "100%", height: "3px" }}>
+          <div style={{ width: (100/this.props.nrQuestions*this.props.index)+"%", height: "3px", backgroundColor: "#28a745", borderBottomRightRadius: ".175rem" }} />
+        </div>
+        <div className="jumbotron shadow bg-light-gray pt-5 pb-1 mb-0 rounded-0">
           <h2>{question.title}</h2>
           {question.description !== undefined && <p className="text-muted">{question.description}</p>}
           <p className="text-muted font-weight-light pt-4" style={{ fontSize: "0.85rem" }}>
             {selections}
           </p>
         </div>
-        <ul className="list-group list-group-flush rounded-bottom" style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0 }}>
+        <ul className="list-group shadow list-group-flush rounded-bottom" style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0 }}>
           <li className="list-group-item p-0" style={{ borderBottomWidth: "2px" }}>
             <div className="input-group has-search">
               <input className="form-control rounded-0 border-0" autoFocus={this.props.switching === undefined} placeholder="Filter" style={{ padding: "0.75rem 1.25rem", outline: "none" }} ref={this.filterRef} onInput={() => this.filterInput()} />

@@ -10,6 +10,8 @@ interface QuestionsProps {
 
 interface Set {
   name: string;
+  startQuestionIndex: number;
+  realNrQuestions: number;
   questions: IQuestion[];
 }
 
@@ -126,6 +128,9 @@ class Questions extends React.Component<QuestionsProps, QuestionsState> {
       return (
         <div className="p-3 p-md-5 container">
           <div className="col-md-8 mx-auto p-0">
+            <div style={{ width: "100%", height: "3px" }}>
+              <div style={{ width: "100%", height: "3px", backgroundColor: "#28a745" }} className="rounded-top" />
+            </div>
             <div className="stage shadow jumbotron bg-light-gray pt-5 pb-1 mb-0">
               <h1 className="display-4">Fertig!</h1>
               <p className="text-muted">
@@ -156,10 +161,15 @@ class Questions extends React.Component<QuestionsProps, QuestionsState> {
               switching={this.state.switching ? "out" : undefined}
               question={this.state.set.questions[this.state.currentQuestion]}
               onNextQuestion={() => this.nextQuestion()}
+              index={this.state.set.startQuestionIndex + this.state.currentQuestion}
+              nrQuestions={this.state.set.realNrQuestions}
             />
-            {this.state.switching && this.state.set.questions.length > this.state.currentQuestion + 1 && <Question switching="in" question={this.state.set.questions[this.state.currentQuestion + 1]} />}
+            {this.state.switching && this.state.set.questions.length > this.state.currentQuestion + 1 && <Question nrQuestions={this.state.set.realNrQuestions} index={this.state.set.startQuestionIndex + this.state.currentQuestion + 1} switching="in" question={this.state.set.questions[this.state.currentQuestion + 1]} />}
             {this.state.switching && this.state.set.questions.length === this.state.currentQuestion + 1 && (
               <div className="stage shadow switching in">
+                <div style={{ width: "100%", height: "3px" }}>
+                  <div style={{ width: "100%", height: "3px", backgroundColor: "#28a745" }} className="rounded-top" />
+                </div>
                 <div className="jumbotron bg-light-gray pt-5 pb-1 mb-0">
                   <h1 className="display-4">Fertig!</h1>
                   <p className="text-muted">

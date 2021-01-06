@@ -13,9 +13,9 @@ $sql->execute();
 $sql->close();
 
 // Check set ident
-$sql = $DB->prepare("SELECT s.name FROM sets s WHERE s.ident = ?");
-$sql->bind_param("s", $URL[2]);
-$sql->bind_result($sName);
+$sql = $DB->prepare("SELECT s.name, (SELECT COUNT(n.question) FROM nexts n JOIN sessions s ON n.session = s.ID WHERE s.sessid = ?), (SELECT COUNT(q.ID) FROM questions q WHERE q.set = s.ID) FROM sets s WHERE s.ident = ?");
+$sql->bind_param("ss", $sid, $URL[2]);
+$sql->bind_result($sName, $startIndex, $realNrQuestions);
 $sql->execute();
 if (!$sql->fetch()) {
   return ["error" => "Invalid set"];
@@ -24,18 +24,22 @@ $sql->close();
 
 $data = [
   "name" => $sName,
+  "startQuestionIndex" => $startIndex,
+  "realNrQuestions" => $realNrQuestions,
   "questions" => []
 ];
 
-$sql = $DB->prepare("SELECT q.id, q.ident, q.title, q.description, q.min, q.max, q.exactly FROM questions q JOIN sets s ON q.set = s.ID WHERE s.ident = ? AND q.id NOT IN (SELECT q.id FROM questions q JOIN options o JOIN sessions s JOIN answers a ON a.option = o.id AND o.question = q.id AND a.session = s.id WHERE s.sessid = ?)");
+$sql = $DB->prepare("SELECT q.id, q.ident, q.title, q.description, q.min, q.max, q.exactly FROM questions q JOIN sets s ON q.set = s.ID WHERE s.ident = ? AND q.id NOT IN (SELECT n.question FROM nexts n JOIN sessions s ON n.session = s.ID WHERE s.sessid = ?)");
 $sql->bind_result($id, $ident, $title, $description, $min, $max, $exactly);
 $sql->bind_param("ss", $URL[2], $sid);
+
+$sqlOpt = $DB->prepare("SELECT o.ident, (SELECT COUNT(a.ID) % 2 FROM answers a WHERE a.session IN (SELECT s.ID FROM sessions s WHERE s.sessid = ?) AND a.option = o.ID), o.name FROM options o WHERE o.question = ?");
+$sqlOpt->bind_result($oIdent, $oSelected, $oName);
+$sqlOpt->bind_param("si", $sid, $id);
+
 $sql->execute();
 $sql->store_result();
 while ($sql->fetch()) {
-  $sqlOpt = $DB->prepare("SELECT o.ident, o.name FROM options o WHERE o.question = ?");
-  $sqlOpt->bind_result($oIdent, $oName);
-  $sqlOpt->bind_param("i", $id);
   $sqlOpt->execute();
   $q = [
     "ident" => $ident,
@@ -57,6 +61,7 @@ while ($sql->fetch()) {
   while ($sqlOpt->fetch()) {
     $q["options"][] = [
       "ident" => $oIdent,
+      "selected" => $oSelected === 1,
       "name" => $oName
     ];
   }
