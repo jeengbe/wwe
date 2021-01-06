@@ -109,11 +109,11 @@ class Question extends React.Component<QuestionProps, QuestionState> {
   protected isValidSelection() {
     const question = this.props.question;
     if ((question as IQuestionExactly).exactly !== undefined) {
-      const q = question as IQuestionExactly;
+      const q = { ...question } as IQuestionExactly;
       return this.state.selectedIndices.length === q.exactly;
     }
 
-    const q = question as IQuestionRange;
+    const q = { ...question } as IQuestionRange;
     q.min = q.min === undefined ? 1 : q.min;
     return this.state.selectedIndices.length >= q.min && (q.max === undefined ? true : this.state.selectedIndices.length <= q.max);
   }
@@ -124,11 +124,11 @@ class Question extends React.Component<QuestionProps, QuestionState> {
   protected isMax() {
     const question = this.props.question;
     if ((question as IQuestionExactly).exactly !== undefined) {
-      const q = question as IQuestionExactly;
+      const q = { ...question } as IQuestionExactly;
       return this.state.selectedIndices.length === q.exactly;
     }
 
-    const q = question as IQuestionRange;
+    const q = { ...question } as IQuestionRange;
     return q.max === undefined ? false : this.state.selectedIndices.length === q.max;
   }
 
@@ -169,11 +169,11 @@ class Question extends React.Component<QuestionProps, QuestionState> {
     // Formulate selections
     let selections;
     if ((question as IQuestionExactly).exactly !== undefined) {
-      const q = question as IQuestionExactly;
+      const q = { ...question } as IQuestionExactly;
       q.exactly = q.exactly === undefined ? 1 : q.exactly;
       selections = "Wähle " + q.exactly + " Option" + (q.exactly === 1 ? "" : "en") + ".";
     } else {
-      const q = question as IQuestionRange;
+      const q = { ...question } as IQuestionRange;
 
       if (q.min !== undefined) {
         if (q.max === undefined) {
@@ -223,7 +223,7 @@ class Question extends React.Component<QuestionProps, QuestionState> {
           Weiter
         </button>
         <div style={{ width: "100%", height: "3px" }}>
-          <div style={{ width: (100/this.props.nrQuestions*this.props.index)+"%", height: "3px", backgroundColor: "#28a745", borderBottomRightRadius: ".175rem" }} />
+          <div style={{ width: (100 / this.props.nrQuestions) * this.props.index + "%", height: "3px", backgroundColor: "#28a745", borderBottomRightRadius: ".175rem" }} />
         </div>
         <div className="jumbotron shadow bg-light-gray pt-5 pb-1 mb-0 rounded-0">
           <h2>{question.title}</h2>

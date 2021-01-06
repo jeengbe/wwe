@@ -198,11 +198,11 @@ class Stats extends React.Component<StatsProps, StatsState> {
       // Formulate selections
       let selections;
       if ((question as IQuestionExactly).exactly !== undefined) {
-        const q = question as IQuestionExactly;
+        const q = { ...question } as IQuestionExactly;
         q.exactly = q.exactly === undefined ? 1 : q.exactly;
         selections = "Genau " + q.exactly + " Option" + (q.exactly === 1 ? "" : "en") + " wählbar.";
       } else {
-        const q = question as IQuestionRange;
+        const q = { ...question } as IQuestionRange;
 
         if (q.min !== undefined) {
           if (q.max === undefined) {
