@@ -175,8 +175,7 @@ class Question extends React.Component<QuestionProps, QuestionState> {
     } else {
       const q = question as IQuestionRange;
 
-      q.min = q.min === undefined ? 1 : q.min;
-      if (q.min !== 0) {
+      if (q.min !== undefined) {
         if (q.max === undefined) {
           selections = "Wähle mindestens " + q.min + " Option" + (q.min === 1 ? "" : "en") + ".";
         } else {
@@ -186,7 +185,7 @@ class Question extends React.Component<QuestionProps, QuestionState> {
         if (q.max !== undefined) {
           selections = "Wähle höchstens " + q.max + " Option" + (q.max === 1 ? "" : "en") + ".";
         } else {
-          selections = "<p class='text-error'>This condition should not be possible</p>";
+          selections = "Wähle mindestens 1 Option.";
         }
       }
     }

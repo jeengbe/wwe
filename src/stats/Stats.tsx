@@ -204,8 +204,7 @@ class Stats extends React.Component<StatsProps, StatsState> {
       } else {
         const q = question as IQuestionRange;
 
-        q.min = q.min === undefined ? 1 : q.min;
-        if (q.min !== 0) {
+        if (q.min !== undefined) {
           if (q.max === undefined) {
             selections = "Mindestens " + q.min + " Option" + (q.min === 1 ? "" : "en") + " wählbar.";
           } else {
@@ -215,7 +214,7 @@ class Stats extends React.Component<StatsProps, StatsState> {
           if (q.max === undefined) {
             selections = "Bis zu " + q.max + " Option" + (q.max === 1 ? "" : "en") + " wählbar.";
           } else {
-            selections = "<p className='text-error'>Diese Bedingung sollte nicht erreicht werden können</p>";
+            selections = "Mindestens 1 Option wählbar.";
           }
         }
       }
