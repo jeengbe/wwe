@@ -134,7 +134,7 @@ class Question extends React.Component<QuestionProps, QuestionState> {
 
   componentDidUpdate() {
     if (this.props.switching === undefined) {
-      if (!isMobile()) {
+      if (this.filterRef?.current !== document.activeElement && !isMobile()) {
         if (this.isValidSelection()) {
           this.btnNextRef?.current?.focus();
         } else {
