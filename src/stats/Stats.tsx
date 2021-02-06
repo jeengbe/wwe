@@ -3,6 +3,7 @@ import { Doughnut } from "react-chartjs-2";
 import API from "src/API";
 import ScrollToTop from "src/scrollToTop/ScrollToTop";
 import * as chartjs from "chart.js";
+import isMobile from "is-mobile";
 
 interface StatsProps {
   ident: string;
@@ -251,6 +252,7 @@ class Stats extends React.Component<StatsProps, StatsState> {
         graph = (
           <>
             <Doughnut
+              height={isMobile() ? 700 : undefined}
               options={options}
               data={{
                 datasets: [
@@ -270,6 +272,7 @@ class Stats extends React.Component<StatsProps, StatsState> {
       } else {
         graph = (
           <Doughnut
+            height={isMobile() ? 700 : undefined}
             options={options}
             data={{
               datasets: [

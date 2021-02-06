@@ -1,6 +1,7 @@
 <?php
 // stats/_
 /** @var \mysqli $DB */
+define("MIN_ANS", 1);
 
 if (!isset($SESSID)) {
   // Register session
@@ -55,17 +56,17 @@ $data["set"] = [
 $data["questions"] = [];
 
 // Get all questions
-$sqlQue = $DB->prepare("SELECT (SELECT COUNT(n.ID) FROM nexts n WHERE n.question = q.ID), (SELECT COUNT(y.ID) FROM answers y JOIN options o ON y.option = o.ID WHERE y.status = 1 AND o.question = q.ID) - (SELECT COUNT(n.ID) FROM answers n JOIN options o ON n.option = o.ID WHERE n.status = 0 AND o.question = q.ID), q.ID, q.title, q.description, q.min, q.max, q.exactly, q.group FROM questions q WHERE q.set = ?");
+$sqlQue = $DB->prepare("SELECT (SELECT COUNT(DISTINCT n.session) FROM nexts n JOIN answers a JOIN options o ON a.option = o.ID AND o.question = n.question WHERE n.question = q.ID), (SELECT COUNT(y.ID) FROM answers y JOIN options o ON y.option = o.ID WHERE y.status = 1 AND o.question = q.ID) - (SELECT COUNT(n.ID) FROM answers n JOIN options o ON n.option = o.ID WHERE n.status = 0 AND o.question = q.ID), q.ID, q.title, q.description, q.min, q.max, q.exactly, q.group FROM questions q WHERE q.set = ?");
 $sqlQue->bind_param("i", $sID);
 $sqlQue->bind_result($qAns, $qOptNr, $qID, $qTitle, $qDescription, $qMin, $qMax, $qExactly, $qGroup);
 
 // Count answers per question ```$qID```
-$sqlAns = $DB->prepare("SELECT * FROM (SELECT o.name, (SELECT COUNT(y.ID) FROM answers y WHERE y.status = 1 AND y.option = o.ID) - (SELECT COUNT(n.ID) FROM answers n WHERE n.status = 0 AND n.option = o.ID) c FROM options o WHERE o.question = ?) q WHERE q.c > 0");
+$sqlAns = $DB->prepare("SELECT * FROM (SELECT o.name, (SELECT COUNT(y.ID) FROM answers y WHERE y.status = 1 AND y.option = o.ID) - (SELECT COUNT(n.ID) FROM answers n WHERE n.status = 0 AND n.option = o.ID) c FROM options o WHERE o.question = ?) q WHERE q.c > 0 ORDER BY c DESC");
 $sqlAns->bind_param("i", $qID);
 $sqlAns->bind_result($aLabel, $aNr);
 
 // Group answers per question ```$qID``` by answerer ```answers.session```
-$sqlAnsGrp = $DB->prepare("SELECT a, COUNT(a) FROM (SELECT GROUP_CONCAT(DISTINCT o.name SEPARATOR ', ') a FROM answers a JOIN options o ON a.option = o.ID JOIN sessions s ON a.session = s.ID WHERE (SELECT o.question FROM options o WHERE o.ID = a.option) = ? AND (SELECT COUNT(y.ID) FROM answers y WHERE y.status = 1 AND y.option = a.option AND y.session = a.session) - (SELECT COUNT(n.ID) FROM answers n WHERE n.status = 0 AND n.option = a.option AND n.session = a.session) > 0 GROUP BY s.sessid) a GROUP BY a");
+$sqlAnsGrp = $DB->prepare("SELECT a, COUNT(a) as c FROM (SELECT GROUP_CONCAT(DISTINCT o.name ORDER BY o.ID SEPARATOR ', ') a FROM answers a JOIN options o ON a.option = o.ID JOIN sessions s ON a.session = s.ID WHERE (SELECT o.question FROM options o WHERE o.ID = a.option) = ? AND (SELECT COUNT(y.ID) FROM answers y WHERE y.status = 1 AND y.option = a.option AND y.session = a.session) - (SELECT COUNT(n.ID) FROM answers n WHERE n.status = 0 AND n.option = a.option AND n.session = a.session) > 0 GROUP BY s.sessid) a GROUP BY a ORDER BY c DESC");
 $sqlAnsGrp->bind_param("i", $qID);
 $sqlAnsGrp->bind_result($aLabel, $aNr);
 
