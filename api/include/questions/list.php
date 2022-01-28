@@ -12,8 +12,8 @@ $sql->execute();
 $sql->close();
 
 // Check set ident
-$sql = $DB->prepare("SELECT s.name, (SELECT COUNT(n.question) FROM nexts n JOIN sessions s ON n.session = s.ID WHERE s.sessid = ?), (SELECT COUNT(q.ID) FROM questions q WHERE q.set = s.ID) FROM sets s WHERE s.ident = ?");
-$sql->bind_param("ss", $SID, $URL[2]);
+$sql = $DB->prepare("SELECT s.name, (SELECT COUNT(n.question) FROM nexts n JOIN sessions s JOIN questions q JOIN sets se ON n.session = s.ID AND n.question = q.ID AND q.set = se.ID WHERE s.sessid = ? AND se.ident = ?), (SELECT COUNT(q.ID) FROM questions q WHERE q.set = s.ID) FROM sets s WHERE s.ident = ?");
+$sql->bind_param("sss", $SID, $URL[2], $URL[2]);
 $sql->bind_result($sName, $startIndex, $realNrQuestions);
 $sql->execute();
 if (!$sql->fetch()) {
